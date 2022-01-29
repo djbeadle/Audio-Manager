@@ -10,14 +10,24 @@ def get_db():
         db = g._database = sqlite3.connect(current_app.config['DB_NAME'])
     return db
 
-def create_thing(thing, description, status):
+
+def record_upload(filename, event_time, aws_region, source_ip, size, etag):
     db = get_db()
     cur = db.cursor()
   
     try:
         cur.execute(
-            "INSERT INTO things(title, description, status) VALUES (?, ?, ?);",
-            [thing, description, status]
+            """
+                INSERT INTO recordings(
+                    filename,
+                    event_time,
+                    aws_region,
+                    size,
+                    etag
+                ) VALUES (?, ?, ?, ?, ?);
+                
+            """,
+            [filename, event_time, aws_region, source_ip, size, etag]
         )
         rows = cur.fetchall()
         db.commit()

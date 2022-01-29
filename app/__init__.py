@@ -49,10 +49,15 @@ def create_app(config_name):
 
     try:
       cur.executescript("""
-        CREATE TABLE IF NOT EXISTS things(
+        CREATE TABLE IF NOT EXISTS recordings(
           id INTEGER PRIMARY KEY,
-          title TEXT,
-          description TEXT,
+          filename TEXT NOT NULL,
+          title TEXT DEFAULT '',
+          version TEXT DEFAULT '', -- ex: 1, 1.4, 1.6
+          description TEXT DEFAULT '', -- ex: "Recorded at Culture Lab"
+          record_date TEXT DEFAULT '',
+          upload_date TEXT DEFAULT '',
+          tags TEXT DEFAULT '', -- A comma-separated list
           status INTEGER DEFAULT 0
         );
       """)

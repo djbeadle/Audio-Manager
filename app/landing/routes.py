@@ -1,9 +1,8 @@
-from http.client import HTTPResponse
-from venv import create
-from flask import render_template, Response
+from flask import render_template, Response, request
 from app.landing import landing_bp
-from db_operations import create_thing, list_all_things
+from db_operations import list_all_things, record_upload
 
+import json, urllib
 
 @landing_bp.route('/', methods=['GET'])
 def home():
@@ -26,7 +25,37 @@ def update_info():
     return 'You have made a put request!'
 
 
-@landing_bp.route('/create_thing', methods=['GET'])
-def create_thing_route():
-    create_thing("Thing!", "This is another thing", 2)
-    return Response("New thing inserted in to the database.", 200)
+
+@landing_bp.route('/s3_upload_callback', methods = ['GET', 'POST', 'PUT'])
+def sns():
+    # TODO-Daniel: Verify Signature from Amazon to prevent malicious
+    # AWS sends JSON with text/plain mimetype
+    # TODO calculate e-tags client side and prevent duplicate uploads https://teppen.io/2018/06/23/aws_s3_etags/#what-is-an-s3-etag
+    try:
+        js = json.loads(request.data)
+    except:
+        pass
+
+    hdr = request.headers.get('X-Amz-Sns-Message-Type')
+    # subscribe to the SNS topic
+    if hdr == 'SubscriptionConfirmation' and 'SubscribeURL' in js:
+        # r = requests.get(js['SubscribeURL'])
+        with urllib.request.urlopen(js['SubscribeURL']) as f:
+            print(f.read().decode('utf-8'))
+
+    # if hdr == 'Notification':
+    #    print(js['Message'], js['Timestamp'])
+
+    msg = js['Message']
+    for r in json.loads(msg)['Records']:
+        record_upload(
+            r['s3']['object']['key'],
+            r['eventTime'],
+            r['awsRegion'],
+            # r['requestParameters']['sourceIPAddress'],
+            r['s3']['object']['size'],
+            r['s3']['object']['eTag'],
+        )
+
+    return 'OK\n'
+

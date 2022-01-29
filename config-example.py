@@ -8,7 +8,7 @@ NEVER be committed to git.
 import os
 
 class Config:
-    APP_NAME = 'Facebook II'
+    APP_NAME = 'Audio Manager'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     
     # All sorts of configuration variables can be set here
