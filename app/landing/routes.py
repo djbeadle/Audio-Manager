@@ -36,26 +36,25 @@ def sns():
     except:
         pass
 
-    hdr = request.headers.get('X-Amz-Sns-Message-Type')
+    hdr = request.headers.get('X-Amz-Sns-Message-Type', None)
+    print(f'hdr: {hdr}')
     # subscribe to the SNS topic
     if hdr == 'SubscriptionConfirmation' and 'SubscribeURL' in js:
         # r = requests.get(js['SubscribeURL'])
         with urllib.request.urlopen(js['SubscribeURL']) as f:
             print(f.read().decode('utf-8'))
 
-    # if hdr == 'Notification':
-    #    print(js['Message'], js['Timestamp'])
-
-    msg = js['Message']
-    for r in json.loads(msg)['Records']:
-        record_upload(
-            r['s3']['object']['key'],
-            r['eventTime'],
-            r['awsRegion'],
-            # r['requestParameters']['sourceIPAddress'],
-            r['s3']['object']['size'],
-            r['s3']['object']['eTag'],
-        )
+    if hdr == 'Notification':
+        msg = js['Message']
+        for r in json.loads(msg)['Records']:
+            record_upload(
+                r['s3']['object']['key'],
+                r['eventTime'],
+                r['awsRegion'],
+                # r['requestParameters']['sourceIPAddress'],
+                r['s3']['object']['size'],
+                r['s3']['object']['eTag'],
+            )
 
     return 'OK\n'
 

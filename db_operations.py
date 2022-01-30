@@ -11,7 +11,7 @@ def get_db():
     return db
 
 
-def record_upload(filename, event_time, aws_region, source_ip, size, etag):
+def record_upload(filename, event_time, aws_region, size, etag):
     db = get_db()
     cur = db.cursor()
   
@@ -27,7 +27,7 @@ def record_upload(filename, event_time, aws_region, source_ip, size, etag):
                 ) VALUES (?, ?, ?, ?, ?);
                 
             """,
-            [filename, event_time, aws_region, source_ip, size, etag]
+            [filename, event_time, aws_region, size, etag]
         )
         rows = cur.fetchall()
         db.commit()
