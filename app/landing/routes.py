@@ -50,7 +50,6 @@ def sns():
             record_upload(
                 r['s3']['object']['key'],
                 r['eventTime'],
-                r['awsRegion'],
                 # r['requestParameters']['sourceIPAddress'],
                 r['s3']['object']['size'],
                 r['s3']['object']['eTag'],

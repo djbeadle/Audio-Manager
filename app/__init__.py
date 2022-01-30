@@ -50,15 +50,20 @@ def create_app(config_name):
     try:
       cur.executescript("""
         CREATE TABLE IF NOT EXISTS recordings(
+          -- Fields from AWS:
           id INTEGER PRIMARY KEY,
           filename TEXT NOT NULL,
-          title TEXT DEFAULT '',
+          etag TEXT NOT NULL,
+          size INTEGER NOT NULL,
+          upload_date TEXT DEFAULT '',
+          
+          -- User definable fields:
+          title TEXT DEFAULT '', -- A display name
           version TEXT DEFAULT '', -- ex: 1, 1.4, 1.6
           description TEXT DEFAULT '', -- ex: "Recorded at Culture Lab"
           record_date TEXT DEFAULT '',
-          upload_date TEXT DEFAULT '',
           tags TEXT DEFAULT '', -- A comma-separated list
-          status INTEGER DEFAULT 0
+          status INTEGER DEFAULT 0 -- Not sure what this is going to be for yet 
         );
       """)
     except Exception as e:
