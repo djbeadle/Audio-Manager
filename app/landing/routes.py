@@ -83,7 +83,7 @@ def get_presigned_s3_upload_url():
     params = request.args
     # TODO-Daniel: prepend unique numbers to filenames to prevent overwriting
     # Due to issues with how S3 encodes plus signs I'm just going to replace them with spaces for now.
-    filename_with_folder = f'{uploader_name.replace(" ", "-")}_{params["filename"].replace("+", " ")}'
+    filename_with_folder = params["filename"].replace("+", " ")
     
     fields = {
         'x-amz-meta-uploader-name': uploader_name,
