@@ -5,7 +5,6 @@ from botocore.config import Config
 
 from config import config
 
-breakpoint()
 _current_env = os.getenv("FLASK_ENV")
 _current_config = config[_current_env]
 
