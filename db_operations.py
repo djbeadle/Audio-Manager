@@ -8,6 +8,7 @@ def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(current_app.config['DB_NAME'])
+        db.row_factory = sqlite3.Row
     return db
 
 
@@ -34,6 +35,7 @@ def record_upload(filename, event_time, size, etag):
         return rows
 
     except Exception as e:
+        print("")
         print("An error occurred fetching all of the things.")
         print(e)
 
@@ -44,8 +46,8 @@ def list_all_things():
   
     try:
         cur.execute("""
-            SELECT id, title, description, status
-            FROM things;
+            SELECT id, filename, record_date, description, status, tags
+            FROM recordings;
         """)
         rows = cur.fetchall()
         db.commit()

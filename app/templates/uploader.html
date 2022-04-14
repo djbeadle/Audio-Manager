@@ -5,23 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<blockquote>{{ event_description }}</blockquote>
-
-    <label>
-        Uploader Name
-        <input
-            type="text"
-            id="uploader-name"
-            placeholder="Uploader's Name"
-            default='anonymous'
-            required
-        >
-    </label>
-
 <div id="drag-drop-area"></div>
-
-
-<h3>NOTE: Files are not encrypted and can be viewed by system administrators.</h3>
 
 <script src="https://releases.transloadit.com/uppy/v2.3.2/uppy.min.js"></script>
 <script>
@@ -36,8 +20,6 @@
         catch (Error) {
             pass;
         }
-        
-        
     }
     
     // The user doesn't want to identify themselves

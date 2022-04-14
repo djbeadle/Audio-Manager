@@ -5,30 +5,37 @@
 
 <h2>Recently Uploaded Recordings</h2>
 
-{% for thing in things %}
-<div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px;">
-    <div style="width: 100%"><a href="/track/{{ thing[1] }}">{{ thing[1] }}</a></div>
-    <hr>
-    <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
-        <div style="font-style: italic;" class="tags">fake, tags, reherseal, trombone solo</div>
-        <div>May, 2021</div>
+{% for date, recordings in things|groupby("record_date") %}
+<h3>{{ date }}</h3>
+{% for thing in recordings %}
+    <div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px;">
+        <div style="width: 100%"><a href="/track/{{ thing.filename }}">{{ thing.filename }}</a></div>
+        <hr>
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
+            <div style="font-style: italic;" class="tags">
+                {% for tag in thing.tags.split(',') %}
+                    <a href="#tag={{ tag }}">{{ tag }}</a>,
+                {% endfor %}
+            </div>
+            <div><a href="#date={{ thing.record_date }}">{{ thing.record_date }}</a></div>
+        </div>
     </div>
-</div>
+{% endfor %}
 {% endfor %}
 
 <div>
-    <h2>Search by tag</h2>
+    <h2>Common tags</h2>
     <ul>
-        <li><a href="#">Performance</a></li>
-        <li><a href="#">Christmas Song</a></li>
-        <li><a href="#">Bari Sax Solo</a></li>
-        <li><a href="#">Trumpet Solo</a></li>
+        <li><a href="#tag=performance">Performance</a></li>
+        <li><a href="#tag=christmas">Christmas</a></li>
+        <li><a href="#tag=bari-sax-solo">Bari Sax Solo</a></li>
+        <li><a href="#tag=trumpet-solo">Trumpet Solo</a></li>
     </ul>
 </div>
 <div>
     <h2>Playlists</h2>
     <ul>
-        <li><a href="#">Mermaid Parade 2022 Set</a></li>
+        <li><a href="#playlist=mermaid-parade-2022">Mermaid Parade 2022</a></li>
     </ul>
 </div>
 
