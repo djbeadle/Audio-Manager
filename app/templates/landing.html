@@ -1,5 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{{ content }}
+<a href="/uploader">Upload</a>
+
+<h2>Recently Uploaded Recordings</h2>
+
+{% for thing in things %}
+<div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px;">
+    <div style="width: 100%"><a href="/track/{{ thing[1] }}">{{ thing[1] }}</a></div>
+    <hr>
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
+        <div style="font-style: italic;" class="tags">fake, tags, reherseal, trombone solo</div>
+        <div>May, 2021</div>
+    </div>
+</div>
+{% endfor %}
+
+<div>
+    <h2>Search by tag</h2>
+    <ul>
+        <li><a href="#">Performance</a></li>
+        <li><a href="#">Christmas Song</a></li>
+        <li><a href="#">Bari Sax Solo</a></li>
+        <li><a href="#">Trumpet Solo</a></li>
+    </ul>
+</div>
+<div>
+    <h2>Playlists</h2>
+    <ul>
+        <li><a href="#">Mermaid Parade 2022 Set</a></li>
+    </ul>
+</div>
+
 {% endblock %}

@@ -15,6 +15,10 @@ def home():
         content=text
     )
 
+@landing_bp.route('/track/<track_name>')
+def track(track_name):
+    return render_template("track.html", track_name=track_name)
+
 
 @landing_bp.route('/info', methods=['GET'])
 def info():
