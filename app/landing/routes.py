@@ -3,6 +3,8 @@ from app.landing import landing_bp
 from db_operations import list_all_things, record_upload
 
 import json, urllib
+from uuid import UUID
+from s3 import generate_presigned_post
 
 @landing_bp.route('/', methods=['GET'])
 def home():
@@ -24,6 +26,9 @@ def info():
 def update_info():
     return 'You have made a put request!'
 
+@landing_bp.route('/uploader')
+def uploader():
+    return render_template('uploader.html')
 
 
 @landing_bp.route('/s3_upload_callback', methods = ['GET', 'POST', 'PUT'])
@@ -57,3 +62,31 @@ def sns():
 
     return 'OK\n'
 
+
+@landing_bp.route('/upload/s3/params', methods=['GET'])
+def get_presigned_s3_upload_url():
+    # https://github.com/transloadit/uppy/blob/main/packages/%40uppy/companion/src/server/controllers/s3.js
+    # TODO-prod: Keep tracing of the user_facing_ids and validate if this is in the database. For now just see if it's a valid UUID
+    try:
+        print(f'metadata: {json.dumps(request.args)}')
+
+        uploader_name = request.args.get('metadata[uploader-name]')
+        file_type = request.args.get('type')
+    except ValueError as e:
+        print(e)
+        return Response({"error": "Now just hold on a minute, bucko."}, status=400, mimetype="application/json")
+
+    params = request.args
+    # TODO-Daniel: prepend unique numbers to filenames to prevent overwriting
+    # Due to issues with how S3 encodes plus signs I'm just going to replace them with spaces for now.
+    filename_with_folder = f'{uploader_name.replace(" ", "-")}_{params["filename"].replace("+", " ")}'
+    
+    fields = {
+        'x-amz-meta-uploader-name': uploader_name,
+        'Content-Type': file_type,
+        'Cache-Control': "public, max-age=31536000, immutable"
+    }
+
+    x = generate_presigned_post(filename_with_folder, params['type'], fields)
+    # x['fields']['content_type'] = file_type
+    return json.dumps(x)
