@@ -1,3 +1,7 @@
 .hi-sam {
     border: 1px solid red;
 }
+
+.audio-player {
+    display: none !important;
+}

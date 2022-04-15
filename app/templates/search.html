@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'track_block.html' import track_block %}
 
 {% block content %}
 <a href="/">Home</a>
@@ -9,18 +10,7 @@
 {% for date, recordings in things|groupby("record_date") %}
 <h3>{{ date }}</h3>
 {% for thing in recordings %}
-    <div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px;">
-        <div style="width: 100%"><a href="/track/{{ thing.filename }}">{{ thing.filename }}</a></div>
-        <hr>
-        <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
-            <div style="font-style: italic;" class="tags">
-                {% for tag in thing.tags.split(',') %}
-                    <a href="/search?tag={{ tag }}">{{ tag }}</a>,
-                {% endfor %}
-            </div>
-            <div><a href="#date={{ thing.record_date }}">{{ thing.record_date }}</a></div>
-        </div>
-    </div>
+    {{ track_block(thing) }}
 {% endfor %}
 {% endfor %}
 {% endblock %}

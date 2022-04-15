@@ -2,12 +2,23 @@
 <head>
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.css'>
     <link rel='stylesheet' href='/static/style.css'>
+    <script src='/static/scripts.js'></script>
 </head>
 <body>
 <h1>{{ config['APP_NAME'] }}</h1>
-{% block content %}
-{% endblock %}
+
+<div style="height: 90vh; overflow-y: scroll;">
+    {% block content %}
+    {% endblock %}
+</div>
 
 {% block scripts %}
 {% endblock %}
+
+<div>
+    <audio controls src="" id="static-audio-player">
+        Your browser does not support the
+        <code>audio</code> element.
+    </audio>
+</div>
 </body>
