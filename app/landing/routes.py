@@ -1,18 +1,24 @@
 from flask import render_template, Response, request
 from app.landing import landing_bp
-from db_operations import list_all_things, record_upload
+from db_operations import list_all_things, record_upload, search_for_things
 
 import json, urllib
 from uuid import UUID
 from s3 import generate_presigned_post
 
+@landing_bp.route('/search')
+def search():
+    return render_template(
+        'search.html',
+        things=search_for_things(tag=request.args.get('tag', ''))
+    )
+
+
 @landing_bp.route('/', methods=['GET'])
 def home():
-    text = 'This is the landing route!'
     return render_template(
         'landing.html',
         things=list_all_things(),
-        content=text
     )
 
 @landing_bp.route('/track/<track_name>')

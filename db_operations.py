@@ -57,3 +57,17 @@ def list_all_things():
     except Exception as e:
         print("An error occurred fetching all of the things.")
         print(e)
+
+def search_for_things(tag):
+    db = get_db()
+    cur = db.cursor()
+    try:
+        return cur.execute("""
+            SELECT id, filename, record_date, description, status, tags
+            FROM recordings
+            WHERE instr(tags, ?);
+        """,
+        [tag])
+    except Exception as e:
+        print("An error occurred searching for things.")
+        print(e)
