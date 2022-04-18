@@ -33,7 +33,6 @@ def record_upload(filename, event_time, size, etag):
         )
         rows = cur.fetchall()
         db.commit()
-        db.close()
         return rows
 
     except Exception as e:
@@ -76,7 +75,6 @@ def update_track(id, description, title, date, recorder, tags):
         tags, id])
     
     db.commit()
-    db.close()
 
 def list_all_things():
     db = get_db()
@@ -89,7 +87,6 @@ def list_all_things():
         """)
         rows = cur.fetchall()
         db.commit()
-        db.close()
         return rows
 
     except Exception as e:

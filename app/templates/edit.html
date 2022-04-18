@@ -142,7 +142,7 @@
 <form onsubmit="event.preventDefault(); save();">
     {% for recording in ids %}
     <div id="track_{{ recording.id }}" class="id-edit-box" style="margin-bottom: 24px;">
-        <h2>{{ recording.filename|unquote }}.mp3</h2>
+        <h2>{{ recording.filename|unquote }}</h2>
         <input class="id" value="{{ recording.id }}" type="hidden">
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="">
