@@ -1,5 +1,7 @@
 import sqlite3
 from flask import g, current_app
+from urllib.parse import quote
+
 
 def get_db():
     """
@@ -42,8 +44,9 @@ def record_upload(filename, event_time, size, etag):
 
 def get_single_thing(filename):
     cur = get_db().cursor()
-
-    cur.execute('SELECT * FROM recordings WHERE filename = ?;', [filename])    
+    print(quote(filename))
+    
+    cur.execute('SELECT * FROM recordings WHERE filename = ?;', [filename.replace(' ', '+')])    
     return cur.fetchone()
 
 

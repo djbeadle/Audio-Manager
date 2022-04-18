@@ -23,9 +23,11 @@ def home():
 
 @landing_bp.route('/edit', methods=['GET'])
 def edit():
+    print(request.args['filenames'])
+
     return render_template(
         'edit.html',
-        ids=map(lambda x: get_single_thing(x), request.args['filenames'].split(',')),
+        ids=map(lambda x: get_single_thing(x), request.args['filenames'].split(';')),
         song_names=get_song_names()
     )
 
