@@ -25,7 +25,7 @@ def home():
 def edit():
     return render_template(
         'edit.html',
-        ids=map(lambda x: get_single_thing(x), request.args['ids'].split(',')),
+        ids=map(lambda x: get_single_thing(x), request.args['filenames'].split(',')),
         song_names=get_song_names()
     )
 
