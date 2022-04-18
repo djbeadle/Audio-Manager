@@ -57,7 +57,7 @@
 
     uppy.on('complete', (result) => {
         console.log('Upload complete! We’ve uploaded these files:', result.successful);
-        window.location.href=`/edit?filenames=${result.successful.map(x => x.meta.key).join(';')}`;
+        setTimeout(() =>  window.location.href=`/edit?filenames=${result.successful.map(x => x.meta.key).join(';')}`, 2000);
     })
 </script>
 {% endblock %}
