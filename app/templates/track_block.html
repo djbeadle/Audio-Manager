@@ -3,7 +3,7 @@
 <div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px;">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <a onclick="changeTrack('{{ thing.filename }}')">{{ thing.filename|unquote }}</a>
-        <div><a target="_blank" href="/edit?ids={{ thing.filename }}">Edit</a></div>
+        <div><a target="_blank" href="/edit?filename={{ thing.filename }}">Edit</a></div>
     </div>
 
     <div>

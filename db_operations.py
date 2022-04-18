@@ -40,10 +40,10 @@ def record_upload(filename, event_time, size, etag):
         print(e)
 
 
-def get_single_thing(rowid):
+def get_single_thing(filename):
     cur = get_db().cursor()
 
-    cur.execute('SELECT * FROM recordings WHERE id = ?;', [rowid])    
+    cur.execute('SELECT * FROM recordings WHERE filename = ?;', [filename])    
     return cur.fetchone()
 
 
