@@ -65,6 +65,17 @@ def create_app(config_name):
           tags TEXT DEFAULT '', -- A comma-separated list
           status INTEGER DEFAULT 0 -- Not sure what this is going to be for yet 
         );
+
+        CREATE TABLE IF NOT EXISTS asset_counter(
+          asset_id INTEGER DEFAULT 0
+        );
+
+        INSERT INTO asset_counter (asset_id) VALUES (0);
+
+        CREATE TABLE IF NOT EXISTS "songs" (
+          "name" TEXT,
+          "gdrive" TEXT
+        );
       """)
     except Exception as e:
       print("Database creation error!")

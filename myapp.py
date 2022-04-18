@@ -8,3 +8,5 @@ import os
 
 print('Firing things up')
 app = create_app(os.getenv('FLASK_ENV') or 'production')
+
+from app import filters

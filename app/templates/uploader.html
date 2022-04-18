@@ -51,11 +51,13 @@
             limit: 2,
             metaFields: ['uploader-name'],
             timeout: 60000, // 1 minute
-            companionUrl: '/upload'
+            companionUrl: '/upload',
+            allowMultipleUploadBatches: false
         })
 
     uppy.on('complete', (result) => {
-        console.log('Upload complete! We’ve uploaded these files:', result.successful)
+        console.log('Upload complete! We’ve uploaded these files:', result.successful);
+        window.location.href=`/edit?ids=${result.successful.map(x => x.meta.key.split('_')[0]).join(',')}`;
     })
 </script>
 {% endblock %}

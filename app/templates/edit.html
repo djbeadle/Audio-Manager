@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<style>
+    .apply-to-all {
+        border-radius: 8px;
+        background: lightgray;
+        padding: 16px 24px;
+        margin-bottom: 12px;
+    }
+    .apply-to-all h2 {
+        margin-top: 0;
+    }
+
+    .form-field {
+        margin-bottom: 16px;
+    }
+
+    .id-edit-box{
+        margin-bottom: 12px;
+        border: 1px solid lightgrey;
+        padding: 12px;
+    }
+    .id-edit-box h2{
+        margin-top: 0px;
+    }
+
+    button {
+        float: right;
+        background-color: #0076d1;
+        color: white;
+    }
+
+    button:hover{
+        background-color: darkblue;
+    }
+
+    .clearfix:after {
+        clear: both;
+        content: ".";
+        display: block;
+        height: 0;
+        visibility: hidden;
+    }
+    .clearfix {
+        display: inline-block;
+    }
+    .clearfix {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function save() {
+        const to_submit = [];
+        const edited_tracks = document.getElementsByClassName("id-edit-box");
+
+        for (const track of edited_tracks) {
+            to_submit.push({
+                id: document.querySelector(`#${track.id} .id`).value,
+                title: document.querySelector(`#${track.id} .song_name`).value,
+                recorder: document.querySelector(`#${track.id} .recorder`).value,
+                description: document.querySelector(`#${track.id} .description`).value,
+                date: document.querySelector(`#${track.id} .date`).value,
+                tags: document.querySelector(`#${track.id} .tags`).value,
+            })
+        }
+
+        fetch(
+            '/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(to_submit),
+            }
+        );
+        return false;
+    }
+
+    function apply_to_all() {
+        const all_recorder = document.getElementById('all-recorder').value;
+        const all_location = document.getElementById('all-location').value;
+        const all_date = document.getElementById('all-date').value;
+
+        for (const elem of document.getElementsByClassName("recorder")) {
+            elem.value = all_recorder;
+        }
+
+        for (const elem of document.getElementsByClassName("location")) {
+            elem.value = all_location;
+        }
+
+        for (const elem of document.getElementsByClassName("date")) {
+            elem.value = all_date;
+        }
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<datalist id="song_names">
+    {% for name in song_names %}
+    <option value="{{ name.name }}">{{ name.name }}</option>
+    {% endfor %}
+</datalist>
+
+<div class="apply-to-all">
+    <h2>Apply to all Uploaded Recordings</h2>
+    <div style="display: flex; flex-direction: row; justify-content: space-between">
+        <div class="form-field">
+            <label for="recorder">Recorder</label>
+            <input id="all-recorder" type="text" name="recorder" id="recorder" placeholder="Louis Armstrong's iPhone"
+                required>
+                <div>
+                    <a onclick="document.getElementById('all-recorder').value = 'Daniel\'s iPhone';">Daniel's iPhone</a>,
+                </div>
+        </div>
+
+        <div class="form-field">
+            <label for="location">Recording location</label>
+            <input id="all-location" type="text" name="location" id="location" placeholder="Culture Lab" required>
+            <div>
+                <a onclick="document.getElementById('all-location').value = 'Culture Lab';">Culture Lab</a>,
+                <a onclick="document.getElementById('all-location').value = 'Chez Bushwick';">Chez Bushwick</a>,
+                <a onclick="document.getElementById('all-location').value = 'Unknown';">Unknown</a>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <label for="date">Recording Date</label>
+            <input id="all-date" type="date" name="date" id="date" required>
+        </div>
+    </div>
+
+    <button onclick="apply_to_all();">Apply to all</button>
+    <div class="clearfix"></div>
+</div>
+
+<form onsubmit="event.preventDefault(); save();">
+    {% for recording in ids %}
+    <div id="track_{{ recording.id }}" class="id-edit-box" style="margin-bottom: 24px;">
+        <h2>{{ recording.filename|unquote }}.mp3</h2>
+        <input class="id" value="{{ recording.id }}" type="hidden">
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div class="">
+                <label for="song_name">Song Name</label>
+                <input list="song_names" class="song_name" value="{{ recording.title }}" required>
+            </div>
+            <div class="">
+                <label for="date">Recording Date</label>
+                <input type="date" name="date" class="date" value="{{ recording.record_date }}" required>
+            </div>
+        </div>
+        <div style="width: 100%;">
+            <label for="song_description">Description</label>
+            <textarea style="width: 100%; height: 48px;" type="paragraph" class="description"
+                placeholder="Experimental run in cut time.">{{ recording.description }}</textarea>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div class="">
+                <label for="recorder">Recorded By</label>
+                <input type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorder }}"  required>
+            </div>
+
+            <div class="">
+                <label for="location">Recorded at<label>
+                <input type="text" name="location" class="location" placeholder="Culture Lab" value="{{ recording.location }}"  required>
+            </div>
+            <div class="">
+                <label for="tags">Tags</label>
+                <input type="text" name="tags" class="tags" value="{{ recording.tags }}"  placeholder="sax solo, drum break">
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <button type="submit">Save</button>
+    <div class="clearfix"></div>
+</form>
+
+{% endblock %}

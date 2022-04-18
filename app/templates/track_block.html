@@ -2,8 +2,12 @@
 
 <div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px;">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
-        <a onclick="changeTrack('{{ thing.filename }}')">{{ thing.filename }}</a>
-        <div><a target="_blank" href="/track/{{ thing.filename }}">Share</a></div>
+        <a onclick="changeTrack('{{ thing.filename }}')">{{ thing.filename|unquote }}</a>
+        <div><a target="_blank" href="/edit?ids={{ thing.id }}">Edit</a></div>
+    </div>
+
+    <div>
+        <i>{{ thing.description }}</i>
     </div>
 
     <hr>
@@ -19,7 +23,7 @@
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <div style="font-style: italic;" class="tags">
             {% for tag in thing.tags.split(',') %}
-            <a href="/search?tag={{ tag }}">{{ tag }}</a>,
+                <a href="/search?tag={{ tag }}">{{ tag }}</a>,
             {% endfor %}
         </div>
         <div><a href="#date={{ thing.record_date }}">{{ thing.record_date }}</a></div>

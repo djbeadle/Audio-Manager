@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>{{ track_name }}</h2>
+<h2>{{ track_obj.filename|unquote }}</h2>
 
 <audio
     controls
-    src="https://audio-manager.s3.amazonaws.com/{{track_name}}"
+    src="https://audio-manager.s3.amazonaws.com/{{ track_obj.filename }}"
 >
         Your browser does not support the
         <code>audio</code> element.

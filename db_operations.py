@@ -40,6 +40,41 @@ def record_upload(filename, event_time, size, etag):
         print(e)
 
 
+def get_single_thing(rowid):
+    cur = get_db().cursor()
+
+    cur.execute('SELECT * FROM recordings WHERE id = ?;', [rowid])    
+    return cur.fetchone()
+
+
+def get_song_names():
+    cur = get_db().cursor()
+
+    cur.execute('SELECT name FROM songs;')
+    return cur.fetchall()
+
+def update_track(id, description, title, date, recorder, tags):
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("""
+        UPDATE recordings
+        SET
+            description = ?,
+            title = ?,
+            record_date = ?,
+            -- recorder = ?,
+            tags = ?
+        WHERE
+            id = ?;
+    """, [
+        description, title, date,
+        #recorder,
+        tags, id])
+    
+    db.commit()
+    db.close()
+
 def list_all_things():
     db = get_db()
     cur = db.cursor()
@@ -71,3 +106,19 @@ def search_for_things(tag):
     except Exception as e:
         print("An error occurred searching for things.")
         print(e)
+
+
+def get_next_asset_id():
+    """
+    Each file that is attempted to be uploaded is given a unique ID to ensure files with duplicate names do not overwrite each other.
+    """
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("BEGIN;")
+    cur.execute("UPDATE asset_counter SET asset_id = asset_id + 1 WHERE rowid = 1;")
+    cur.execute('SELECT asset_id - 1 FROM asset_counter WHERE rowid = 1')
+    x = cur.fetchone()
+    cur.execute('COMMIT;')
+
+    return x[0]
