@@ -4,35 +4,51 @@
     <link rel='stylesheet' href='/static/style.css'>
     <script src='/static/scripts.js'></script>
 
+    <style>
+        .flex-spacer {
+            flex-shrink: 2;
+            flex-grow: 2;
+        }
+    </style>
+
     {% block styles %}
     {% endblock %}
 
 </head>
-<body style="height: 90vh; overflow-y: scroll;">
+<body style="margin: 0;">
+    <div style="width: 98vw; height: 90vh; padding: 0; display: flex; flex-direction: row; align-items: space-around;">
+        <div class="flex-spacer"></div>
+        <div style="max-width: 600px; width:100%; ">
+            <nav>
+                <a href="/">Home</a>
+                <a href="/uploader">Upload</a>
+            </nav>
 
-<h1>{{ config['APP_NAME'] }}</h1>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
 
-<nav>
-<a href="/">Home</a>
-<a href="/uploader">Upload</a>
-</nav>
+            <div style="height: 90vh; overflow-y: scroll; width:95%;">
+                {% block content %}
+                {% endblock %}
+            </div>
 
 
-<div style="height: 90%; overflow-y: scroll;">
-    {% block content %}
-    {% endblock %}
+            {% block scripts %}
+            {% endblock %}
+
+                
+            </div>
+
+            {% block static_audio_player %}
+            <div style="position: absolute; bottom:0;">
+                <audio controls src="" id="static-audio-player">
+                    Your browser does not support the
+                    <code>audio</code> element.
+                </audio>
+            </div>
+            {% endblock %}
+
+        </div>
+        <div class="flex-spacer"></div>
+    </div>
 </div>
-
-
-{% block scripts %}
-{% endblock %}
-
-{% block static_audio_player %}
-<div>
-    <audio controls src="" id="static-audio-player">
-        Your browser does not support the
-        <code>audio</code> element.
-    </audio>
-</div>
-{% endblock %}
 </body>

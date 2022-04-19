@@ -6,11 +6,9 @@
                 {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
             </a>
             <div>
-                <a href="https://audio-manager.s3.amazonaws.com/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
-                    Download
-                </a>
+                <a href="https://audio-manager.s3.amazonaws.com/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
                 <a href="/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
-                    Search by Title
+                    🔍
                 </a>
                 <a target="_blank" href="/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
             </div>
