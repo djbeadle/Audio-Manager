@@ -34,7 +34,7 @@
         <div style="font-style: italic;" class="tags">
             {% if thing.tags != '' %}
             {% for tag in thing.tags.split(',') %}
-                <a href="/search?tag={{ tag }}">{{ tag }}</a>,
+                <a href="/search?tag={{ tag|trim }}">{{ tag }}</a>,
             {% endfor %}
             {% endif %}
         </div>

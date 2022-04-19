@@ -97,20 +97,28 @@ max-width: 800px;
         const all_date = document.getElementById('all-date').value;
         const all_tags = document.getElementById('all-tags').value;
 
-        for (const elem of document.getElementsByClassName("recorder")) {
-            elem.value = all_recorder;
+        if (all_recorder.trim() !== ''){
+            for (const elem of document.getElementsByClassName("recorder")) {
+                elem.value = all_recorder;
+            }
         }
 
-        for (const elem of document.getElementsByClassName("location")) {
-            elem.value = all_location;
+        if (all_location.trim() !== ''){
+            for (const elem of document.getElementsByClassName("location")) {
+                elem.value = all_location;
+            }
         }
 
-        for (const elem of document.getElementsByClassName("date")) {
-            elem.value = all_date;
+        if (all_date.trim() !== ''){
+            for (const elem of document.getElementsByClassName("date")) {
+                elem.value = all_date;
+            }
         }
 
-        for (const elem of document.getElementsByClassName("tags")) {
-            elem.value = all_tags;
+        if (all_tags.trim() !== ''){
+            for (const elem of document.getElementsByClassName("tags")) {
+                elem.value = all_tags;
+            }
         }
     }
 </script>
