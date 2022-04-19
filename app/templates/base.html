@@ -9,12 +9,20 @@
 
 </head>
 <body style="height: 90vh; overflow-y: scroll;">
+
 <h1>{{ config['APP_NAME'] }}</h1>
+
+<nav>
+<a href="/">Home</a>
+<a href="/uploader">Upload</a>
+</nav>
+
 
 <div style="height: 90%; overflow-y: scroll;">
     {% block content %}
     {% endblock %}
 </div>
+
 
 {% block scripts %}
 {% endblock %}

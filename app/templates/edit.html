@@ -61,7 +61,8 @@
             to_submit.push({
                 id: document.querySelector(`#${track.id} .id`).value,
                 title: document.querySelector(`#${track.id} .song_name`).value,
-                recorder: document.querySelector(`#${track.id} .recorder`).value,
+                recorded_by: document.querySelector(`#${track.id} .recorder`).value,
+                location: document.querySelector(`#${track.id} .location`).value,
                 description: document.querySelector(`#${track.id} .description`).value,
                 date: document.querySelector(`#${track.id} .date`).value,
                 tags: document.querySelector(`#${track.id} .tags`).value,
@@ -113,15 +114,16 @@
         <div class="form-field">
             <label for="recorder">Recorder</label>
             <input id="all-recorder" type="text" name="recorder" id="recorder" placeholder="Louis Armstrong's iPhone"
-                required>
+               >
                 <div>
+                    <a onclick="document.getElementById('all-recorder').value = 'Wendy\'s Zoom';">Wendy's Zoom</a>,
                     <a onclick="document.getElementById('all-recorder').value = 'Daniel\'s iPhone';">Daniel's iPhone</a>,
                 </div>
         </div>
 
         <div class="form-field">
             <label for="location">Recording location</label>
-            <input id="all-location" type="text" name="location" id="location" placeholder="Culture Lab" required>
+            <input id="all-location" type="text" name="location" id="location" placeholder="Culture Lab">
             <div>
                 <a onclick="document.getElementById('all-location').value = 'Culture Lab';">Culture Lab</a>,
                 <a onclick="document.getElementById('all-location').value = 'Chez Bushwick';">Chez Bushwick</a>,
@@ -131,7 +133,7 @@
 
         <div class="form-field">
             <label for="date">Recording Date</label>
-            <input id="all-date" type="date" name="date" id="date" required>
+            <input id="all-date" type="date" name="date" id="date">
         </div>
     </div>
 
@@ -147,11 +149,11 @@
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="">
                 <label for="song_name">Song Name</label>
-                <input list="song_names" class="song_name" value="{{ recording.title }}" required>
+                <input list="song_names" class="song_name" value="{{ recording.title }}">
             </div>
             <div class="">
                 <label for="date">Recording Date</label>
-                <input type="date" name="date" class="date" value="{{ recording.record_date }}" required>
+                <input type="date" name="date" class="date" value="{{ recording.record_date }}">
             </div>
         </div>
         <div style="width: 100%;">
@@ -162,12 +164,12 @@
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="">
                 <label for="recorder">Recorded By</label>
-                <input type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorder }}"  required>
+                <input type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorder }}" >
             </div>
 
             <div class="">
                 <label for="location">Recorded at<label>
-                <input type="text" name="location" class="location" placeholder="Culture Lab" value="{{ recording.location }}"  required>
+                <input type="text" name="location" class="location" placeholder="Culture Lab" value="{{ recording.location }}" >
             </div>
             <div class="">
                 <label for="tags">Tags</label>

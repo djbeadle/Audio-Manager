@@ -60,7 +60,9 @@ def create_app(config_name):
           -- User definable fields:
           title TEXT DEFAULT '', -- A display name
           version TEXT DEFAULT '', -- ex: 1, 1.4, 1.6
-          description TEXT DEFAULT '', -- ex: "Recorded at Culture Lab"
+          recorded_by TEXT DEFAULT '', -- Who / what device recorded
+          location TEXT DEFAULT '', -- Where the recording was made
+          description TEXT DEFAULT '', -- ex: Notes about the song
           record_date TEXT DEFAULT '',
           tags TEXT DEFAULT '', -- A comma-separated list
           status INTEGER DEFAULT 0 -- Not sure what this is going to be for yet 

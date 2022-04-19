@@ -2,11 +2,9 @@
 {% from 'track_block.html' import track_block %}
 
 {% block content %}
-<a href="/uploader">Upload</a>
-
 <h2>Recently Uploaded Recordings</h2>
 
-{% for date, recordings in things|groupby("record_date") %}
+{% for date, recordings in things|groupby("record_date")|reverse %}
 <h3>{{ date }}</h3>
 {% for thing in recordings %}
     {{ track_block(thing) }}
@@ -17,9 +15,10 @@
     <h2>Common tags</h2>
     <ul>
         <li><a href="/search?tag=performance">Performance</a></li>
-        <li><a href="/search?tag=christmas">Christmas</a></li>
-        <li><a href="/search?tag=bari-sax-solo">Bari Sax Solo</a></li>
-        <li><a href="/search?tag=trumpet-solo">Trumpet Solo</a></li>
+        <li><a href="/search?tag=Christmas">Christmas</a></li>
+        <li><a href="/search?tag=bari sax solo">Bari Sax Solo</a></li>
+        <li><a href="/search?tag=trumpet solo">Trumpet Solo</a></li>
+
     </ul>
 </div>
 <div>

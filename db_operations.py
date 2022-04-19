@@ -45,7 +45,7 @@ def get_single_thing(filename):
     cur = get_db().cursor()
     print(quote(filename))
     
-    cur.execute('SELECT * FROM recordings WHERE filename = ?;', [filename.replace(' ', '+')])    
+    cur.execute('SELECT * FROM recordings WHERE filename like ?;', [f'{filename.replace(" ", "+")}_%'])    
     return cur.fetchone()
 
 
@@ -55,7 +55,7 @@ def get_song_names():
     cur.execute('SELECT name FROM songs;')
     return cur.fetchall()
 
-def update_track(id, description, title, date, recorder, tags):
+def update_track(id, description, title, date, recorded_by, location, tags):
     db = get_db()
     cur = db.cursor()
 
@@ -65,13 +65,15 @@ def update_track(id, description, title, date, recorder, tags):
             description = ?,
             title = ?,
             record_date = ?,
-            -- recorder = ?,
+            recorded_by = ?,
+            location = ?,
             tags = ?
         WHERE
             id = ?;
     """, [
         description, title, date,
-        #recorder,
+        recorded_by,
+        location,
         tags, id])
     
     db.commit()
@@ -82,7 +84,7 @@ def list_all_things():
   
     try:
         cur.execute("""
-            SELECT id, filename, record_date, description, status, tags
+            SELECT *
             FROM recordings;
         """)
         rows = cur.fetchall()
@@ -98,7 +100,7 @@ def search_for_things(tag):
     cur = db.cursor()
     try:
         return cur.execute("""
-            SELECT id, filename, record_date, description, status, tags
+            SELECT *
             FROM recordings
             WHERE instr(tags, ?);
         """,

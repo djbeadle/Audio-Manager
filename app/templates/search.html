@@ -2,9 +2,6 @@
 {% from 'track_block.html' import track_block %}
 
 {% block content %}
-<a href="/">Home</a>
-<a href="/uploader">Upload</a>
-
 <h2>Search</h2>
 
 {% for date, recordings in things|groupby("record_date") %}
