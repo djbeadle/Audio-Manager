@@ -17,26 +17,19 @@
 
 </head>
 <body style="margin: 0;">
-    <div style="width: 98vw; height: 90vh; padding: 0; display: flex; flex-direction: row; align-items: space-around;">
+    <div style="width: 98vw; height: 100vh; padding: 0; display: flex; flex-direction: row; align-items: space-around;">
         <div class="flex-spacer"></div>
-        <div style="max-width: 600px; width:100%; ">
+        <div style="{% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
             <nav>
                 <a href="/">Home</a>
                 <a href="/uploader">Upload</a>
             </nav>
 
             <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
-
-            <div style="height: 90vh; overflow-y: scroll; width:95%;">
-                {% block content %}
-                {% endblock %}
-            </div>
-
-
-            {% block scripts %}
-            {% endblock %}
-
-                
+                <div style="height: 100vh; overflow-y: scroll; width:95%;">
+                    {% block content %}
+                    {% endblock %}
+                </div>            
             </div>
 
             {% block static_audio_player %}
@@ -47,9 +40,11 @@
                 </audio>
             </div>
             {% endblock %}
-
         </div>
         <div class="flex-spacer"></div>
     </div>
 </div>
+
+{% block scripts %}
+{% endblock %}    
 </body>
