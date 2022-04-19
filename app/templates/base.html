@@ -20,13 +20,13 @@
     <div style="width: 98vw; height: 100vh; padding: 0; display: flex; flex-direction: row; align-items: space-around;">
         <div class="flex-spacer"></div>
         <div style="{% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/uploader">Upload</a>
-            </nav>
-
             <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
-                <div style="height: 100vh; overflow-y: scroll; width:95%;">
+                <nav style="align-self: flex-start;">
+                    <a href="/">Home</a>
+                    <a style="margin-left: 50px;" href="/uploader">Upload</a>
+                </nav>
+                <!-- height: 95 to leave room for navigation -->
+                <div style="height: 95vh; overflow-y: scroll; width:95%;">
                     {% block content %}
                     {% endblock %}
                 </div>            
