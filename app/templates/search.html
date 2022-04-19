@@ -4,7 +4,7 @@
 {% block content %}
 <h2>Search</h2>
 
-{% for date, recordings in things|groupby("record_date") %}
+{% for date, recordings in things|groupby("record_date")|reverse %}
 <h3>{{ date }}</h3>
 {% for thing in recordings %}
     {{ track_block(thing) }}

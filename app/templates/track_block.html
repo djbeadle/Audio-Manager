@@ -6,8 +6,11 @@
                 {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
             </a>
             <div>
+                <a href="https://audio-manager.s3.amazonaws.com/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
+                    Download
+                </a>
                 <a href="/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
-                    🔍
+                    Search by Title
                 </a>
                 <a target="_blank" href="/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
             </div>
@@ -29,9 +32,11 @@
     </div>
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <div style="font-style: italic;" class="tags">
+            {% if thing.tags != '' %}
             {% for tag in thing.tags.split(',') %}
                 <a href="/search?tag={{ tag }}">{{ tag }}</a>,
             {% endfor %}
+            {% endif %}
         </div>
         <div><a href="#date={{ thing.record_date }}">{{ thing.record_date }}</a></div>
     </div>

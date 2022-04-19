@@ -173,11 +173,7 @@
                     <input
                         list="song_names"
                         class="song_name"
-                        {% if recording.title != '' %}
                         value="{{ recording.title }}"
-                        {% else %}
-                        value="{{ recording.filename }}"
-                        {% endif %}
                     >
             </div>
             <div class="">
@@ -187,7 +183,7 @@
 
             {% if loop.nextitem is defined %}
             <div style="align-self: end;">
-                <button class="skip-button" onclick="document.querySelector('#track_{{ loop.nextitem.id }} .song_name').focus();">Next -></button>
+                <button class="skip-button" onclick="document.querySelector('#track_{{ loop.nextitem.id }}').scrollIntoView(); document.querySelector('#track_{{ loop.nextitem.id }} .song_name').focus();">Next -></button>
             </div>
             {% endif %}
         </div>
