@@ -1,14 +1,16 @@
 {% macro track_block(thing) -%}
 
-<div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px;">
+<div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px; border-left: 4px solid {{ thing.record_date|date_to_color }};">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
-        <a onclick="changeTrack('{{ thing.filename }}')">
-        {% if thing.title != '' %}
-            {{ thing.title }}
-        {% else %}
-            ▶ {{ thing.filename|unquote }}</a>
-        {% endif %}
-        <div><a target="_blank" href="/edit?filenames={{ thing.filename|file_id }}">Edit</a></div>
+            <a onclick="changeTrack('{{ thing.filename }}')">
+                {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
+            </a>
+            <div>
+                <a href="/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
+                    🔍
+                </a>
+                <a target="_blank" href="/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
+            </div>
     </div>
 
     <div>

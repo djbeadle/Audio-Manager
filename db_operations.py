@@ -109,6 +109,20 @@ def search_for_things(tag):
         print("An error occurred searching for things.")
         print(e)
 
+def search_for_song(song):
+    db = get_db()
+    cur = db.cursor()
+    try:
+        return cur.execute("""
+            SELECT *
+            FROM recordings
+            WHERE title = ?
+        """,
+        [song])
+    except Exception as e:
+        print("An error occurred searching for a song.")
+        print(e)
+
 
 def get_next_asset_id():
     """

@@ -1,6 +1,6 @@
 from flask import render_template, Response, request
 from app.landing import landing_bp
-from db_operations import get_single_thing, list_all_things, record_upload, search_for_things, get_next_asset_id, get_song_names, update_track
+from db_operations import get_single_thing, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
 
 import json, urllib
 from uuid import UUID
@@ -8,10 +8,16 @@ from s3 import generate_presigned_post
 
 @landing_bp.route('/search')
 def search():
-    return render_template(
-        'search.html',
-        things=search_for_things(tag=request.args.get('tag', ''))
-    )
+    if request.args.get('tag'):
+        return render_template(
+            'search.html',
+            things=search_for_things(tag=request.args.get('tag', ''))
+        )
+    elif request.args.get('song'):
+        return render_template(
+            'search.html',
+            things=search_for_song(song=request.args.get('song', ''))
+        )
 
 
 @landing_bp.route('/', methods=['GET'])

@@ -1,11 +1,22 @@
 {% extends 'base.html' %}
 {% from 'track_block.html' import track_block %}
 
+{% block styles %}
+<style>
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        padding-bottom: 8px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <h2>Recently Uploaded Recordings</h2>
 
 {% for date, recordings in things|groupby("record_date")|reverse %}
-<h3>{{ date }}</h3>
+<h3 class="sticky-header">{{ date }}</h3>
 {% for thing in recordings %}
     {{ track_block(thing) }}
 {% endfor %}

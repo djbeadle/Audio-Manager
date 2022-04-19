@@ -35,6 +35,12 @@
         background-color: darkblue;
     }
 
+    .skip-button {
+        border: 2px solid #0076d1;
+        color: #0076d1;
+        background-color: white;
+    }
+
     .clearfix:after {
         clear: both;
         content: ".";
@@ -85,6 +91,7 @@
         const all_recorder = document.getElementById('all-recorder').value;
         const all_location = document.getElementById('all-location').value;
         const all_date = document.getElementById('all-date').value;
+        const all_tags = document.getElementById('all-tags').value;
 
         for (const elem of document.getElementsByClassName("recorder")) {
             elem.value = all_recorder;
@@ -96,6 +103,10 @@
 
         for (const elem of document.getElementsByClassName("date")) {
             elem.value = all_date;
+        }
+
+        for (const elem of document.getElementsByClassName("tags")) {
+            elem.value = all_tags;
         }
     }
 </script>
@@ -110,10 +121,10 @@
 
 <div class="apply-to-all">
     <h2>Apply to all Uploaded Recordings</h2>
-    <div style="display: flex; flex-direction: row; justify-content: space-between">
+    <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">
         <div class="form-field">
-            <label for="recorder">Recorder</label>
-            <input id="all-recorder" type="text" name="recorder" id="recorder" placeholder="Louis Armstrong's iPhone"
+            <label for="recorder">Recorded By</label>
+            <input id="all-recorder" type="text" name="recorder" placeholder="Louis Armstrong's iPhone"
                >
                 <div>
                     <a onclick="document.getElementById('all-recorder').value = 'Wendy\'s Zoom';">Wendy's Zoom</a>,
@@ -123,7 +134,7 @@
 
         <div class="form-field">
             <label for="location">Recording location</label>
-            <input id="all-location" type="text" name="location" id="location" placeholder="Culture Lab">
+            <input id="all-location" type="text" name="location" placeholder="Culture Lab">
             <div>
                 <a onclick="document.getElementById('all-location').value = 'Culture Lab';">Culture Lab</a>,
                 <a onclick="document.getElementById('all-location').value = 'Chez Bushwick';">Chez Bushwick</a>,
@@ -133,7 +144,17 @@
 
         <div class="form-field">
             <label for="date">Recording Date</label>
-            <input id="all-date" type="date" name="date" id="date">
+            <input id="all-date" type="date" name="date">
+        </div>
+
+        <div class="form-field">
+            <label for="tags">Tags</label>
+            <input id="all-tags" type="text" name="tags">
+            <div>
+                <a onclick="document.getElementById('all-tags').value += 'Performance, ';">Performance</a>,
+                <a onclick="document.getElementById('all-tags').value += 'Partial, ';">Partial</a>,
+                <a onclick="document.getElementById('all-tags').value += 'Mashup, '">Mashup</a>
+            </div>
         </div>
     </div>
 
@@ -149,12 +170,26 @@
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="">
                 <label for="song_name">Song Name</label>
-                <input list="song_names" class="song_name" value="{{ recording.title }}">
+                    <input
+                        list="song_names"
+                        class="song_name"
+                        {% if recording.title != '' %}
+                        value="{{ recording.title }}"
+                        {% else %}
+                        value="{{ recording.filename }}"
+                        {% endif %}
+                    >
             </div>
             <div class="">
-                <label for="date">Recording Date</label>
-                <input type="date" name="date" class="date" value="{{ recording.record_date }}">
+                <label for="tags">Tags</label>
+                <input type="text" name="tags" class="tags" value="{{ recording.tags }}"  placeholder="sax solo, drum break">
             </div>
+
+            {% if loop.nextitem is defined %}
+            <div style="align-self: end;">
+                <button class="skip-button" onclick="document.querySelector('#track_{{ loop.nextitem.id }} .song_name').focus();">Next -></button>
+            </div>
+            {% endif %}
         </div>
         <div style="width: 100%;">
             <label for="song_description">Description</label>
@@ -168,12 +203,12 @@
             </div>
 
             <div class="">
-                <label for="location">Recorded at<label>
+                <label for="location">Recording Location<label>
                 <input type="text" name="location" class="location" placeholder="Culture Lab" value="{{ recording.location }}" >
             </div>
             <div class="">
-                <label for="tags">Tags</label>
-                <input type="text" name="tags" class="tags" value="{{ recording.tags }}"  placeholder="sax solo, drum break">
+                <label for="date">Recording Date</label>
+                <input type="date" name="date" class="date" value="{{ recording.record_date }}">
             </div>
         </div>
     </div>
