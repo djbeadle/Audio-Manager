@@ -30,26 +30,31 @@ def home(group_id):
         things=list_all_things(group_id),
     )
 
-@landing_bp.route('/edit', methods=['GET'])
-def edit():
+@landing_bp.route('/<int:group_id>/edit', methods=['GET'])
+def edit(group_id):
     print(request.args['filenames'])
 
     return render_template(
         'edit.html',
         ids=map(lambda x: get_single_thing(x), request.args['filenames'].split(';')),
+        group={ 'id': group_id },
         song_names=get_song_names()
     )
 
-@landing_bp.route('/edit', methods=['POST'])
+@landing_bp.route('edit', methods=['POST'])
 def save_edit():
     print(json.loads(request.data))
     list(map(lambda x: update_track(**x), request.json))
     return '', 200
 
-@landing_bp.route('/track/<track_id>')
-def track(track_id):
+@landing_bp.route('/<int:group_id>/track/<track_id>')
+def track(group_id, track_id):
     track_obj = get_single_thing(track_id)
-    return render_template("track.html", track_obj=track_obj)
+    return render_template(
+        "track.html",
+        group={ 'id': group_id },
+        track_obj=track_obj
+    )
 
 
 @landing_bp.route('/info', methods=['GET'])
