@@ -31,7 +31,7 @@ def home(group_id):
     )
 
 @landing_bp.route('/<int:group_id>/edit', methods=['GET'])
-def edit(group_id):
+def edit(group):
     print(request.args['filenames'])
 
     return render_template(
@@ -41,7 +41,7 @@ def edit(group_id):
         song_names=get_song_names()
     )
 
-@landing_bp.route('edit', methods=['POST'])
+@landing_bp.route('/edit', methods=['POST'])
 def save_edit():
     print(json.loads(request.data))
     list(map(lambda x: update_track(**x), request.json))
