@@ -4,10 +4,15 @@
 {% block content %}
 <h2>Search</h2>
 
+<div style="background: gainsboro; padding: 8px;">
+<h3>Notes about searching:</h3>
+<p>At the moment you can only do searches for tags and song names that exactly match your search term. This means searching for "Vivir Mi Vida" does not return results for mashups like the hypothetical paring "Vivir Mi Vida / Superstition". This is a work in progress.</p>
+</div>
+
 {% for date, recordings in things|groupby("record_date")|reverse %}
-<h3>{{ date }}</h3>
-{% for thing in recordings %}
-    {{ track_block(thing, group) }}
-{% endfor %}
+    <h3>{{ date }}</h3>
+    {% for thing in recordings %}
+        {{ track_block(thing, group) }}
+    {% endfor %}
 {% endfor %}
 {% endblock %}

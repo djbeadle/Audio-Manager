@@ -1,4 +1,4 @@
-from flask import render_template, Response, request
+from flask import redirect, render_template, Response, request
 from app.landing import landing_bp
 from db_operations import get_group_info, get_single_thing, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
 

@@ -33,12 +33,12 @@
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <div style="font-style: italic;" class="tags">
             {% if thing.tags != '' %}
-                {% for tag in thing.tags.split(',') %}
+                {% for tag in thing.tags.strip().split(',') %}
                     <a href="/{{ group.id }}/search?tag={{ tag|trim }}">{{ tag }}</a>,
                 {% endfor %}
             {% endif %}
         </div>
-        <div><a href="#date={{ thing.record_date }}">{{ thing.record_date }}</a></div>
+        <div><a href="/{{ group.id }}#{{ thing.record_date }}">{{ thing.record_date }}</a></div>
     </div>
 </div>
 
