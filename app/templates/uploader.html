@@ -37,7 +37,8 @@
                 allowedFileTypes: ['.mp3'],
             },
             meta: {
-                'uploader-name': "anonymous"
+                'uploader-name': "anonymous",
+                'group_id': {{ group.id }}
             },
             debug: false
         })
@@ -51,7 +52,7 @@
             limit: 2,
             metaFields: ['uploader-name'],
             timeout: 60000, // 1 minute
-            companionUrl: '/upload',
+            companionUrl: '/{{ group.id }}/upload',
             allowMultipleUploadBatches: false
         })
 

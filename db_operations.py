@@ -14,7 +14,7 @@ def get_db():
     return db
 
 
-def record_upload(filename, event_time, size, etag):
+def record_upload(filename, event_time, size, etag, group_id):
     db = get_db()
     cur = db.cursor()
   
@@ -25,19 +25,18 @@ def record_upload(filename, event_time, size, etag):
                     filename,
                     upload_date,
                     size,
-                    etag
-                ) VALUES (?, ?, ?, ?);
+                    etag,
+                    group_id
+                ) VALUES (?, ?, ?, ?, ?);
                 
             """,
-            [filename, event_time, size, etag]
+            [filename, event_time, size, etag, group_id]
         )
-        rows = cur.fetchall()
         db.commit()
-        return rows
 
     except Exception as e:
         print("")
-        print("An error occurred fetching all of the things.")
+        print("An error occurred while recording an upload.")
         print(e)
 
 
@@ -78,17 +77,22 @@ def update_track(id, description, title, date, recorded_by, location, tags):
     
     db.commit()
 
-def list_all_things():
+def get_group_info(group_id):
+    cur = get_db().cursor()
+    return cur.execute("SELECT * FROM groups WHERE id = ?;", [group_id]).fetchone()
+
+
+def list_all_things(group_id):
     db = get_db()
     cur = db.cursor()
   
     try:
         cur.execute("""
             SELECT *
-            FROM recordings;
-        """)
+            FROM recordings
+            WHERE group_id = ?;
+        """, [group_id])
         rows = cur.fetchall()
-        db.commit()
         return rows
 
     except Exception as e:

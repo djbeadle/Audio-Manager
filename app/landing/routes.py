@@ -1,30 +1,33 @@
 from flask import render_template, Response, request
 from app.landing import landing_bp
-from db_operations import get_single_thing, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
+from db_operations import get_group_info, get_single_thing, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
 
 import json, urllib
 from uuid import UUID
 from s3 import generate_presigned_post
 
-@landing_bp.route('/search')
-def search():
+@landing_bp.route('/<int:group_id>/search')
+def search(group_id):
     if request.args.get('tag'):
         return render_template(
             'search.html',
+            group={id: group_id},
             things=search_for_things(tag=request.args.get('tag', ''))
         )
     elif request.args.get('song'):
         return render_template(
             'search.html',
+            group={id: group_id},
             things=search_for_song(song=request.args.get('song', ''))
         )
 
 
-@landing_bp.route('/', methods=['GET'])
-def home():
+@landing_bp.route('/<int:group_id>', methods=['GET'])
+def home(group_id):
     return render_template(
         'landing.html',
-        things=list_all_things(),
+        group=get_group_info(group_id),
+        things=list_all_things(group_id),
     )
 
 @landing_bp.route('/edit', methods=['GET'])
@@ -59,9 +62,12 @@ def info():
 def update_info():
     return 'You have made a put request!'
 
-@landing_bp.route('/uploader')
-def uploader():
-    return render_template('uploader.html')
+@landing_bp.route('/<int:group_id>/uploader')
+def uploader(group_id):
+    return render_template(
+        'uploader.html',
+        group={ 'id': group_id },
+    )
 
 
 @landing_bp.route('/s3_upload_callback', methods = ['GET', 'POST', 'PUT'])
@@ -85,19 +91,22 @@ def sns():
     if hdr == 'Notification':
         msg = js['Message']
         for r in json.loads(msg)['Records']:
+            folder, file = r['s3']['object']['key'].split('/')
+
             record_upload(
-                r['s3']['object']['key'],
+                file,
                 r['eventTime'],
                 # r['requestParameters']['sourceIPAddress'],
                 r['s3']['object']['size'],
                 r['s3']['object']['eTag'],
+                folder
             )
 
     return 'OK\n'
 
 
-@landing_bp.route('/upload/s3/params', methods=['GET'])
-def get_presigned_s3_upload_url():
+@landing_bp.route('/<int:group_id>/upload/s3/params', methods=['GET'])
+def get_presigned_s3_upload_url(group_id):
     # https://github.com/transloadit/uppy/blob/main/packages/%40uppy/companion/src/server/controllers/s3.js
     # TODO-prod: Keep tracing of the user_facing_ids and validate if this is in the database. For now just see if it's a valid UUID
     try:
@@ -111,7 +120,7 @@ def get_presigned_s3_upload_url():
 
     params = request.args
     # Due to issues with how S3 encodes plus signs I'm just going to replace them with spaces for now.
-    filename_with_folder = f'{get_next_asset_id()}_{params["filename"].replace("+", " ")}'
+    filename_with_folder = f'{group_id}/{get_next_asset_id()}_{params["filename"].replace("+", " ")}'
     
     fields = {
         # 'x-amz-meta-uploader-name': uploader_name,

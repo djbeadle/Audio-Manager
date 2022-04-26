@@ -13,13 +13,16 @@
 {% endblock %}
 
 {% block content %}
-<h2>Recently Uploaded Recordings</h2>
+<h2>{{ group.name }}</h2>
+<p>{{ group.description }}</p>
 
 {% for date, recordings in things|groupby("record_date")|reverse %}
-<h3 class="sticky-header">{{ date }}</h3>
-{% for thing in recordings %}
-    {{ track_block(thing) }}
-{% endfor %}
+    <h3 class="sticky-header">{{ date }}</h3>
+    {% for thing in recordings %}
+        {{ track_block(thing, group) }}
+    {% endfor %}
+{% else %}
+    <p>No recordings have been uploaded for this group yet! Go jam and then head over to the <a href="{{group.id}}/uploader">uploader</a>!</p>
 {% endfor %}
 
 <div>

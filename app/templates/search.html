@@ -7,7 +7,7 @@
 {% for date, recordings in things|groupby("record_date")|reverse %}
 <h3>{{ date }}</h3>
 {% for thing in recordings %}
-    {{ track_block(thing) }}
+    {{ track_block(thing, group) }}
 {% endfor %}
 {% endfor %}
 {% endblock %}

@@ -57,6 +57,9 @@ def create_app(config_name):
           size INTEGER NOT NULL,
           upload_date TEXT DEFAULT '',
           
+          -- Mandatory, non-AWS fields
+          group_id INTEGER NOT NULL,
+
           -- User definable fields:
           title TEXT DEFAULT '', -- A display name
           version TEXT DEFAULT '', -- ex: 1, 1.4, 1.6
@@ -66,6 +69,13 @@ def create_app(config_name):
           record_date TEXT DEFAULT '',
           tags TEXT DEFAULT '', -- A comma-separated list
           status INTEGER DEFAULT 0 -- Not sure what this is going to be for yet 
+        );
+
+        CREATE TABLE IF NOT EXISTS groups(
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT DEFAULT '',
+          status INTEGER DEFAULT 0
         );
 
         CREATE TABLE IF NOT EXISTS asset_counter(

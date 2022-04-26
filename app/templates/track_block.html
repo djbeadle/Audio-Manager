@@ -1,15 +1,15 @@
-{% macro track_block(thing) -%}
+{% macro track_block(thing, group) -%}
 
 <div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px; border-left: 4px solid {{ thing.record_date|date_to_color }};">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <div style="max-width: 50%;">
-            <a onclick="changeTrack('{{ thing.filename }}')">
+            <a onclick="changeTrack('{{group.id}}/{{ thing.filename }}')">
                 {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
             </a>
         </div>
         <div>
-            <a href="https://audio-manager.s3.amazonaws.com/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
-            <a href="/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
+            <a href="https://audio-manager.s3.amazonaws.com/{{ group.id }}/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
+            <a href="/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
                 🔍
             </a>
             <a target="_blank" href="/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
@@ -24,7 +24,7 @@
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;"
         class="audio-player" id="{{ thing.filename }}">
         <div>
-            <audio controls src="https://audio-manager.s3.amazonaws.com/{{thing.filename}}">
+            <audio controls src="https://audio-manager.s3.amazonaws.com/{{ group.id }}/{{ thing.filename }}">
                 Your browser does not support the
                 <code>audio</code> element.
             </audio>
@@ -33,9 +33,9 @@
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <div style="font-style: italic;" class="tags">
             {% if thing.tags != '' %}
-            {% for tag in thing.tags.split(',') %}
-                <a href="/search?tag={{ tag|trim }}">{{ tag }}</a>,
-            {% endfor %}
+                {% for tag in thing.tags.split(',') %}
+                    <a href="/{{ group.id }}/search?tag={{ tag|trim }}">{{ tag }}</a>,
+                {% endfor %}
             {% endif %}
         </div>
         <div><a href="#date={{ thing.record_date }}">{{ thing.record_date }}</a></div>
