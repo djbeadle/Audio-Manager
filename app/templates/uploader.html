@@ -60,7 +60,7 @@
         console.log('Upload complete! We’ve uploaded these files:', result.successful);
         // When editing files we only refer to them by their unique asset id, so strip out the group id and filename
         // {group_id}/{asset_id}_{filename}
-        setTimeout(() =>  window.location.href=`/edit?filenames=${result.successful.map(x => x.meta.key.split('/')[1].split('_')[0]).join(';')}`, 2000);S
+        setTimeout(() =>  window.location.href=`/{{ group.id }}/edit?filenames=${result.successful.map(x => x.meta.key.split('/')[1].split('_')[0]).join(';')}`, 2000);S
     })
 </script>
 {% endblock %}

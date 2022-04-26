@@ -11,13 +11,13 @@ def search(group_id):
     if request.args.get('tag'):
         return render_template(
             'search.html',
-            group={id: group_id},
+            group={'id': group_id},
             things=search_for_things(tag=request.args.get('tag', ''))
         )
     elif request.args.get('song'):
         return render_template(
             'search.html',
-            group={id: group_id},
+            group={'id': group_id},
             things=search_for_song(song=request.args.get('song', ''))
         )
 
@@ -31,7 +31,7 @@ def home(group_id):
     )
 
 @landing_bp.route('/<int:group_id>/edit', methods=['GET'])
-def edit(group):
+def edit(group_id):
     print(request.args['filenames'])
 
     return render_template(
