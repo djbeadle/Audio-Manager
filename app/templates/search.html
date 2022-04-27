@@ -9,10 +9,13 @@
 <p>At the moment you can only do searches for tags and song names that exactly match your search term. This means searching for "Vivir Mi Vida" does not return results for mashups like the hypothetical paring "Vivir Mi Vida / Superstition". This is a work in progress.</p>
 </div>
 
-{% for date, recordings in things|groupby("record_date")|reverse %}
-    <h3>{{ date }}</h3>
-    {% for thing in recordings %}
-        {{ track_block(thing, group) }}
+{% for date, recordings_by_date in things|groupby("record_date")|reverse %}
+    <h3 style="margin-bottom:0;">{{ date }}</h3>
+    {% for location, recordings_by_date_and_loc in recordings_by_date|groupby("location") %}
+        <h4 style="margin-top: 0;">{{ location}}</h4>
+        {% for thing in recordings_by_date_and_loc %}
+            {{ track_block(thing, group) }}
+        {% endfor %}
     {% endfor %}
 {% endfor %}
 {% endblock %}

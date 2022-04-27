@@ -38,10 +38,13 @@
     </details>
 </div>
 
-{% for date, recordings in things|groupby("record_date")|reverse %}
-    <h3 id="{{date|trim}}" class="sticky-header">{{ date|trim }}</h3>
-    {% for thing in recordings %}
-        {{ track_block(thing, group) }}
+{% for date, recordings_by_date in things|groupby("record_date")|reverse %}
+    <h3 id="{{date|trim}}" class="sticky-header" style="margin-bottom:0;">{{ date|trim }}</h3>
+    {% for location, recordings_by_date_and_loc in recordings_by_date|groupby("location") %}
+        <h4 style="margin-top:0;">{{ location }}</h4>
+        {% for r_thing in recordings_by_date_and_loc %}
+            {{ track_block(r_thing, group) }}
+        {% endfor %}
     {% endfor %}
 {% else %}
     <p>No recordings have been uploaded for this group yet! Go jam and then head over to the <a href="/{{group.id}}/uploader">uploader</a>!</p>
