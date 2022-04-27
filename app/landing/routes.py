@@ -1,6 +1,6 @@
 from flask import redirect, render_template, Response, request
 from app.landing import landing_bp
-from db_operations import get_group_info, get_single_thing, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
+from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
 
 import json, urllib
 from uuid import UUID
@@ -27,6 +27,7 @@ def home(group_id):
     return render_template(
         'landing.html',
         group=get_group_info(group_id),
+        song_counts=get_song_counts(),
         things=list_all_things(group_id),
     )
 

@@ -13,6 +13,11 @@ def get_db():
         db.row_factory = sqlite3.Row
     return db
 
+def get_song_counts():
+    cur = get_db().cursor()
+
+    return cur.execute("SELECT title, count(*) AS count FROM recordings GROUP BY title;").fetchall()
+
 
 def record_upload(filename, event_time, size, etag, group_id):
     db = get_db()
