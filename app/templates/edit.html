@@ -106,7 +106,12 @@ max-width: 800px;
                 },
                 body: JSON.stringify(to_submit),
             }
-        );
+        ).then((response) => {
+            if (response.ok) {
+                window.location.href = '/{{ group.id }}/uploader';
+            }
+        });
+
         return false;
     }
 
