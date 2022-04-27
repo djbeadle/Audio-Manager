@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block extra_head %}
+<script type="text/javascript" src="/static/fuzzyset.js"></script>
+{% endblock %}
+
 {% block max_width %}
 max-width: 800px;
 {% endblock %}
@@ -63,6 +67,21 @@ max-width: 800px;
 
 {% block scripts %}
 <script>
+    let fs = FuzzySet([
+        {% for name in song_names %}
+        '{{ name.name }}',
+        {% endfor %}
+    ]);
+
+    const els = document.getElementsByClassName('song_name');
+    Array.from(els).forEach((el) => {
+        var tmp = fs.get(el.getAttribute('fallbackValue'));
+        
+        if (tmp !== null){
+            el.value = tmp[0][1];
+        }
+    })
+
     function save() {
         const to_submit = [];
         const edited_tracks = document.getElementsByClassName("id-edit-box");
@@ -185,6 +204,7 @@ max-width: 800px;
                     <input
                         list="song_names"
                         class="song_name"
+                        fallbackValue="{{ recording.filename|trim }}" 
                         value="{{ recording.title }}"
                     >
             </div>
@@ -221,7 +241,7 @@ max-width: 800px;
         </div>
     </div>
     {% endfor %}
-    <button type="submit">Save</button>
+    <button type="submit">Save and next</button>
     <div class="clearfix"></div>
 </form>
 
