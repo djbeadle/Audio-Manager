@@ -69,16 +69,17 @@ max-width: 800px;
 <script>
     let fs = FuzzySet([
         {% for name in song_names %}
-        '{{ name.name }}',
+        "{{ name.name|safe }}",
         {% endfor %}
     ]);
 
     const els = document.getElementsByClassName('song_name');
     Array.from(els).forEach((el) => {
-        var tmp = fs.get(el.getAttribute('fallbackValue'));
-        
-        if (tmp !== null){
-            el.value = tmp[0][1];
+        if (el.title.trim() === ''){
+            var tmp = fs.get(el.getAttribute('fallbackValue').split('_')[1]);
+            if (tmp !== null){
+                el.value = tmp[0][1];
+            }
         }
     })
 
@@ -108,7 +109,7 @@ max-width: 800px;
             }
         ).then((response) => {
             if (response.ok) {
-                window.location.href = '/{{ group.id }}/uploader';
+                // window.location.href = '/{{ group.id }}/uploader';
             }
         });
 
@@ -220,7 +221,7 @@ max-width: 800px;
 
             {% if loop.nextitem is defined %}
             <div style="align-self: end;">
-                <button class="skip-button" onclick="document.querySelector('#track_{{ loop.nextitem.id }}').scrollIntoView(); document.querySelector('#track_{{ loop.nextitem.id }} .song_name').focus();">Next -></button>
+                <button type="button" class="skip-button" onclick="document.querySelector('#track_{{ loop.nextitem.id }}').scrollIntoView(); document.querySelector('#track_{{ loop.nextitem.id }} .song_name').focus();">Next -></button>
             </div>
             {% endif %}
         </div>
@@ -232,7 +233,7 @@ max-width: 800px;
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="">
                 <label for="recorder">Recorded By</label>
-                <input type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorder }}" >
+                <input type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorded_by }}">
             </div>
 
             <div class="">
