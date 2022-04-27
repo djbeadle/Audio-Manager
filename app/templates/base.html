@@ -6,6 +6,9 @@
     <script data-goatcounter="https://audio.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     <script src='/static/scripts.js'></script>
 
+
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+
     <style>
         .flex-spacer {
             flex-shrink: 2;
@@ -45,11 +48,11 @@
             </div>
 
             {% block static_audio_player %}
-            <div style="position: absolute; bottom:0;">
-                <audio controls src="" id="static-audio-player">
-                    Your browser does not support the
-                    <code>audio</code> element.
-                </audio>
+             <div style="position: absolute; bottom:0; width:800px; height: 100px; overflow-y:hidden; display: flex; flex-direction: row;">
+                    <button style="align-self: end;" type="button" class="btn btn-primary" data-action="play">
+                        Play / Pause
+                    </button>
+                <div style="height:200px; width:500px;" id="waveform"></div>
             </div>
             {% endblock %}
         </div>
@@ -58,5 +61,22 @@
 </div>
 
 {% block scripts %}
+<script>
+var wavesurfer = WaveSurfer.create({
+    container: '#waveform',
+    backend: 'MediaElement',
+    barWidth: 3,
+    barRadius: 3,
+    cursorWidth: 1,
+    height: 200,
+    barGap: 3
+});
+
+// toggle play button
+document
+    .querySelector('[data-action="play"]')
+    .addEventListener('click', wavesurfer.playPause.bind(wavesurfer));
+
+</script>
 {% endblock %}    
 </body>

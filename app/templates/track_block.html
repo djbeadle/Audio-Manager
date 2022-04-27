@@ -3,8 +3,8 @@
 <div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px; border-left: 4px solid {{ thing.record_date|date_to_color }};">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <div style="max-width: 50%;">
-            <a onclick="changeTrack('{{ group.id }}/{{ thing.filename }}')">
-                {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
+            <a onclick="changeTrack('{{ group.id }}/{{ thing.filename }}', wavesurfer)">
+                ▶️ {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
             </a>
         </div>
         <div>
