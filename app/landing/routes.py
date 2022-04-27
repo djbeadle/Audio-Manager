@@ -32,8 +32,6 @@ def home(group_id):
 
 @landing_bp.route('/<int:group_id>/edit', methods=['GET'])
 def edit(group_id):
-    print(request.args['filenames'])
-
     return render_template(
         'edit.html',
         ids=map(lambda x: get_single_thing(x), request.args['filenames'].split(';')),
@@ -43,7 +41,6 @@ def edit(group_id):
 
 @landing_bp.route('/edit', methods=['POST'])
 def save_edit():
-    print(json.loads(request.data))
     list(map(lambda x: update_track(**x), request.json))
     return '', 200
 
