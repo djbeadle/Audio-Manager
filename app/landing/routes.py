@@ -1,4 +1,4 @@
-from flask import redirect, render_template, Response, request
+from flask import redirect, render_template, Response, request, g
 from app.landing import landing_bp
 from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
 
@@ -6,37 +6,53 @@ import json, urllib
 from uuid import UUID
 from s3 import generate_presigned_post
 
-@landing_bp.route('/<int:group_id>/search')
-def search(group_id):
+@landing_bp.before_request
+def translate_name():
+    print(request.path)
+    id = request.path.split('/')[1].lower()
+    print(f'id: {id}')
+    if id == 'ltbb':
+        g.group_id = 0
+    elif id == 'nice':
+        g.group_id = 1
+    elif id == '3rd': 
+        g.group_id = 2
+    else:
+        g.group_id = id
+
+@landing_bp.route('/<raw_group_id>/search')
+def search(raw_group_id):
     if request.args.get('tag'):
         return render_template(
             'search.html',
-            group={'id': group_id},
-            things=search_for_things(tag=request.args.get('tag', ''))
+            group={'id': g.group_id},
+            things=search_for_things(request.args.get('tag', ''), g.group_id)
         )
     elif request.args.get('song'):
         return render_template(
             'search.html',
-            group={'id': group_id},
-            things=search_for_song(song=request.args.get('song', ''))
+            group={'id': g.group_id},
+            things=search_for_song(request.args.get('song', ''), g.group_id)
         )
 
 
-@landing_bp.route('/<int:group_id>', methods=['GET'])
-def home(group_id):
+@landing_bp.route('/<raw_group_id>', methods=['GET'])
+def home(raw_group_id):
+    print(raw_group_id)
+    print(g.group_id)
     return render_template(
         'landing.html',
-        group=get_group_info(group_id),
-        song_counts=get_song_counts(),
-        things=list_all_things(group_id),
+        group=get_group_info(g.group_id),
+        song_counts=get_song_counts(g.group_id),
+        things=list_all_things(g.group_id),
     )
 
-@landing_bp.route('/<int:group_id>/edit', methods=['GET'])
-def edit(group_id):
+@landing_bp.route('/<raw_group_id>/edit', methods=['GET'])
+def edit(raw_group_id):
     return render_template(
         'edit.html',
         ids=map(lambda x: get_single_thing(x), request.args['filenames'].split(';')),
-        group={ 'id': group_id },
+        group={ 'id': g.group_id },
         song_names=get_song_names()
     )
 
@@ -45,12 +61,12 @@ def save_edit():
     list(map(lambda x: update_track(**x), request.json))
     return '', 200
 
-@landing_bp.route('/<int:group_id>/track/<track_id>')
-def track(group_id, track_id):
+@landing_bp.route('/<raw_group_id>/track/<track_id>')
+def track(raw_group_id,track_id):
     track_obj = get_single_thing(track_id)
     return render_template(
         "track.html",
-        group={ 'id': group_id },
+        group={ 'id': g.group_id },
         track_obj=track_obj
     )
 
@@ -65,11 +81,11 @@ def info():
 def update_info():
     return 'You have made a put request!'
 
-@landing_bp.route('/<int:group_id>/uploader')
-def uploader(group_id):
+@landing_bp.route('/<raw_group_id>/uploader')
+def uploader(raw_group_id):
     return render_template(
         'uploader.html',
-        group={ 'id': group_id },
+        group={ 'id': g.group_id },
     )
 
 
@@ -108,8 +124,8 @@ def sns():
     return 'OK\n'
 
 
-@landing_bp.route('/<int:group_id>/upload/s3/params', methods=['GET'])
-def get_presigned_s3_upload_url(group_id):
+@landing_bp.route('/<raw_group_id>/upload/s3/params', methods=['GET'])
+def get_presigned_s3_upload_url(raw_group_id):
     # https://github.com/transloadit/uppy/blob/main/packages/%40uppy/companion/src/server/controllers/s3.js
     # TODO-prod: Keep tracing of the user_facing_ids and validate if this is in the database. For now just see if it's a valid UUID
     try:
@@ -123,7 +139,7 @@ def get_presigned_s3_upload_url(group_id):
 
     params = request.args
     # Due to issues with how S3 encodes plus signs I'm just going to replace them with spaces for now.
-    filename_with_folder = f'{group_id}/{get_next_asset_id()}_{params["filename"].replace("+", " ")}'
+    filename_with_folder = f'{g.group_id}/{get_next_asset_id()}_{params["filename"].replace("+", " ")}'
     
     fields = {
         # 'x-amz-meta-uploader-name': uploader_name,

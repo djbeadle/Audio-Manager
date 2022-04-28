@@ -2,9 +2,9 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.css'>
-    <link rel='stylesheet' href='/static/style.css'>
+    <link rel='stylesheet' href='/audio/static/style.css'>
     <script data-goatcounter="https://audio.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-    <script src='/static/scripts.js'></script>
+    <script src='/audio/static/scripts.js'></script>
 
 
     <script src="https://unpkg.com/wavesurfer.js"></script>
@@ -37,7 +37,7 @@
         <div style="{% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
             <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                 <nav style="align-self: flex-start;">
-                    <a href="/{{ group.id }}">Home</a>
+                    <a href="{{ group.id }}">Home</a>
                     <!-- <a style="margin-left: 50px;" href="/{{ group.id }}/uploader">Upload</a> -->
                 </nav>
                 <!-- height: 95 to leave room for navigation -->

@@ -8,9 +8,9 @@
             </a>
         </div>
         <div>
-            <a href="/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">Search</a>
+            <a href="/audio/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">Search</a>
             <a href="https://audio-manager.s3.amazonaws.com/{{ group.id }}/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
-            <a target="_blank" href="/{{ group.id }}/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
+            <a target="_blank" href="/audio/{{ group.id }}/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
         </div>
     </div>
 
@@ -26,11 +26,11 @@
         <div style="font-style: italic;" class="tags">
             {% if thing.tags != '' %}
                 {% for tag in thing.tags.strip().split(',') %}
-                    <a href="/{{ group.id }}/search?tag={{ tag|trim }}">{{ tag }}</a>,
+                    <a href="/audio/{{ group.id }}/search?tag={{ tag|trim }}">{{ tag }}</a>,
                 {% endfor %}
             {% endif %}
         </div>
-        <div><a href="/{{ group.id }}#{{ thing.record_date }}">{{ thing.record_date }}</a></div>
+        <div><a href="/audio/{{ group.id }}#{{ thing.record_date }}">{{ thing.record_date }}</a></div>
     </div>
 </div>
 
