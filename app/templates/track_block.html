@@ -8,10 +8,8 @@
             </a>
         </div>
         <div>
+            <a href="/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">Search</a>
             <a href="https://audio-manager.s3.amazonaws.com/{{ group.id }}/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
-            <a href="/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">
-                🔍
-            </a>
             <a target="_blank" href="/{{ group.id }}/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
         </div>
     </div>
@@ -24,7 +22,7 @@
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;"
         class="audio-player" id="{{ thing.filename }}">
         <div>
-            <audio controls src="https://audio-manager.s3.amazonaws.com/{{ group.id }}/{{ thing.filename }}">
+            <audio preload="none" controls src="https://audio-manager.s3.amazonaws.com/{{ group.id }}/{{ thing.filename }}">
                 Your browser does not support the
                 <code>audio</code> element.
             </audio>

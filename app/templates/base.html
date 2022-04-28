@@ -38,7 +38,7 @@
             <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                 <nav style="align-self: flex-start;">
                     <a href="/{{ group.id }}">Home</a>
-                    <a style="margin-left: 50px;" href="/{{ group.id }}/uploader">Upload</a>
+                    <!-- <a style="margin-left: 50px;" href="/{{ group.id }}/uploader">Upload</a> -->
                 </nav>
                 <!-- height: 95 to leave room for navigation -->
                 <div style="height: 95vh; overflow-y: scroll; width:95%;">
@@ -64,7 +64,7 @@
 <script>
 var wavesurfer = WaveSurfer.create({
     container: '#waveform',
-    backend: 'MediaElement',
+    // backend: 'MediaElement',
     barWidth: 3,
     barRadius: 3,
     cursorWidth: 1,
@@ -76,6 +76,10 @@ var wavesurfer = WaveSurfer.create({
 document
     .querySelector('[data-action="play"]')
     .addEventListener('click', wavesurfer.playPause.bind(wavesurfer));
+
+wavesurfer.on('ready', function () {
+        wavesurfer.play()
+});
 
 </script>
 {% endblock %}    
