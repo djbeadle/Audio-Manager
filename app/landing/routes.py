@@ -25,24 +25,28 @@ def search(raw_group_id):
     if request.args.get('tag'):
         return render_template(
             'search.html',
-            group={'id': g.group_id},
+            group={'id': raw_group_id},
             things=search_for_things(request.args.get('tag', ''), g.group_id)
         )
     elif request.args.get('song'):
         return render_template(
             'search.html',
-            group={'id': g.group_id},
+            group={'id': raw_group_id},
             things=search_for_song(request.args.get('song', ''), g.group_id)
         )
+    else:
+        return "Invalid search", 200
 
 
 @landing_bp.route('/<raw_group_id>', methods=['GET'])
 def home(raw_group_id):
-    print(raw_group_id)
-    print(g.group_id)
+    group_info = get_group_info(g.group_id)
+    group_info = dict(zip(group_info.keys(), group_info))
+    group_info['id'] = raw_group_id
+
     return render_template(
         'landing.html',
-        group=get_group_info(g.group_id),
+        group=group_info,
         song_counts=get_song_counts(g.group_id),
         things=list_all_things(g.group_id),
     )

@@ -21,7 +21,7 @@
         <summary>Search by Song Name</summary>
         <ul>
             {% for name, count in song_counts|sort(attribute='1')|reverse %}
-            <li><a href="/{{ group.id }}/search?song={{ name }}">{{ count }} - {{ name }}</a></li>
+            <li><a href="/audio/{{ group.id }}/search?song={{ name }}">{{ count }} - {{ name }}</a></li>
             {% endfor %}
         </ul>
     </details>
@@ -29,16 +29,16 @@
     <details>
         <summary>Search by Tag</summary>
         <ul>
-            <li><a href="/{{group.id}}/search?tag=midi">Midi</a></li>
-            <li><a href="/{{group.id}}/search?tag=draft">Draft</a></li>
-            <li><a href="/{{group.id}}/search?tag=Performance">Performance</a></li>
-            <li><a href="/{{group.id}}/search?tag=holiday">Holiday</a></li>
-            <li><a href="/{{group.id}}/search?tag=session">Session</a></li>
-            <li><a href="/{{group.id}}/search?tag=NOLA 2020">NOLA 2020</a></li>
-            <li><a href="/{{group.id}}/search?tag=Preservation Hall">Preservation Hall</a></li>
-            <li><a href="/{{group.id}}/search?tag=poor audio">Poor audio</a></li>
-            <li><a href="/{{group.id}}/search?tag=cell phone recording">Cell phone recording</a></li>
-            <li><a href="/{{group.id}}/search?tag=questionable title">Possibly incorrect title</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=midi">Midi</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=draft">Draft</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=Performance">Performance</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=holiday">Holiday</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=session">Session</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=NOLA 2020">NOLA 2020</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=Preservation Hall">Preservation Hall</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=poor audio">Poor audio</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=cell phone recording">Cell phone recording</a></li>
+            <li><a href="/audio/{{group.id}}/search?tag=questionable title">Possibly incorrect title</a></li>
         </ul>
     </details>
 </div>
@@ -52,7 +52,7 @@
         {% endfor %}
     {% endfor %}
 {% else %}
-    <p>No recordings have been uploaded for this group yet! Go jam and then head over to the <a href="/{{group.id}}/uploader">uploader</a>!</p>
+    <p>No recordings have been uploaded for this group yet! Go jam and then head over to the <a href="/audio/{{group.id}}/uploader">uploader</a>!</p>
 {% endfor %}
 
 {% endblock %}
