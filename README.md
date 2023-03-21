@@ -1,3 +1,12 @@
+# What is "Audio Manager"?
+
+Audio Manager is a website that aims to replace Google Drive for storing and sharing a musician's audio recordings.
+
+For example, the L-Train Brass Band has a great Google Drive folder with several years worth of audio recordings sorted by date. It's easy to see the recordings from the last two rehersals but hard to see all the performance recordings. Additionally this website allows for tagging and file descriptions. 
+
+Recordings are stored in Amazon S3.
+
+
 # Setting up the development environment
 Prerequisites Python3 and Pip [(install guide)](https://docs.python-guide.org/dev/virtualenvs/#make-sure-you-ve-got-python-pip), virtualenv [(install guide)](https://docs.python-guide.org/dev/virtualenvs/#lower-level-virtualenv), and git [(another install guide)](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
