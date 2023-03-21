@@ -17,6 +17,8 @@ def translate_name():
         g.group_id = 1
     elif id == '3rd': 
         g.group_id = 2
+    elif id == 'm97ab':
+        g.group_id = 3
     else:
         g.group_id = id
 

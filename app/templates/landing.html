@@ -47,7 +47,7 @@
     <h3 id="{{date|trim}}" class="sticky-header" style="margin-bottom:0;">{{ date|trim }}</h3>
     {% for location, recordings_by_date_and_loc in recordings_by_date|groupby("location") %}
         <h4 style="margin-top:0;">{{ location }}</h4>
-        {% for r_thing in recordings_by_date_and_loc %}
+        {% for r_thing in recordings_by_date_and_loc|sort(attribute="filename") %}
             {{ track_block(r_thing, group) }}
         {% endfor %}
     {% endfor %}

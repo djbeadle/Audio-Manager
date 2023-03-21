@@ -31,10 +31,10 @@
     {% endblock %}
 
 </head>
-<body style="margin: 0;">
-    <div style="width: 98vw; height: 100vh; padding: 0; display: flex; flex-direction: row; align-items: space-around;">
+<body style="margin: 0; padding: 0; touch-action: none;">
+    <div style="width: 100vw; height: 100vh; padding: 0; display: flex; flex-direction: row; align-items: space-around; overflow-x: hidden;">
         <div class="flex-spacer"></div>
-        <div style="{% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
+        <div style="overflow-y: none; {% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
             <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                 <nav style="align-self: flex-start;">
                     <a href="/audio/{{ group.id }}">Home</a>
@@ -48,11 +48,15 @@
             </div>
 
             {% block static_audio_player %}
-             <div style="position: absolute; bottom:0; width:800px; height: 100px; overflow-y:hidden; display: flex; flex-direction: row;">
-                    <button style="align-self: end;" type="button" class="btn btn-primary" data-action="play">
-                        Play / Pause
-                    </button>
-                <div style="height:200px; width:500px;" id="waveform"></div>
+             <div style="position: fixed;bottom: 0; bottom: calc(env(safe-area-inset-bottom)); touch-action: none;background-color: white; width:100%; height: 100px; overflow-y:hidden; display: flex; flex-direction: row;flex: 1;">
+
+                <button
+                    style="align-self: end;width:110px;flex-grow: 0;" type="button" class="btn btn-primary" data-action="play"
+                    onclick="changeText()"
+               >
+                    Play / Pause
+                </button>
+                <div style="height:200px; width:100%;flex-grow:1;" id="waveform"></div>
             </div>
             {% endblock %}
         </div>
@@ -62,9 +66,13 @@
 
 {% block scripts %}
 <script>
+
+const soundEffect = new Audio();
+soundEffect.autoplay = true;
+
 var wavesurfer = WaveSurfer.create({
     container: '#waveform',
-    // backend: 'MediaElement',
+    backend: 'MediaElement',
     barWidth: 3,
     barRadius: 3,
     cursorWidth: 1,
@@ -75,11 +83,37 @@ var wavesurfer = WaveSurfer.create({
 // toggle play button
 document
     .querySelector('[data-action="play"]')
-    .addEventListener('click', wavesurfer.playPause.bind(wavesurfer));
+    .addEventListener(
+        'click',
+        wavesurfer.playPause.bind(wavesurfer)
+    );
 
-wavesurfer.on('ready', function () {
-        wavesurfer.play()
+wavesurfer.on('play', function (err) {
+
+    document.querySelector('[data-action="play"]').innerText = "Pause";
 });
+wavesurfer.on('pause', function (err) {
+    document.querySelector('[data-action="play"]').innerText = "Play";
+});
+wavesurfer.on('error', function (err) {
+    console.log(err);
+});
+wavesurfer.on('ready', function () {
+    <!-- iOS Safari does not allow programatic music playing -->
+    if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+        document.querySelector('[data-action="play"]').innerText = "Play";
+    }
+    else {
+        document.querySelector('[data-action="play"]').innerText = "Play/Pause";
+        wavesurfer.play();
+    }
+});
+
+function changeText() {
+    if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+        document.querySelector('[data-action="play"]').innerText = "Play/Pause";
+    }   
+}
 
 </script>
 {% endblock %}    

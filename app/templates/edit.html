@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block extra_head %}
-<script type="text/javascript" src="/static/fuzzyset.js"></script>
+<script type="text/javascript" src="/audio/static/fuzzyset.js"></script>
 {% endblock %}
 
 {% block max_width %}
@@ -100,7 +100,7 @@ max-width: 800px;
         }
 
         fetch(
-            '/edit', {
+            '/audio/edit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

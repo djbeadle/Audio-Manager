@@ -1,28 +1,28 @@
 {% macro track_block(thing, group) -%}
 
-<div style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px; border-left: 4px solid {{ thing.record_date|date_to_color }};">
+<div id="{{ thing.filename|file_id }}" class="track-block" style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px; border-left: 4px solid {{ thing.record_date|date_to_color }};">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
         <div style="max-width: 50%;">
             <a onclick="changeTrack('{{ g.group_id }}/{{ thing.filename }}', wavesurfer)">
                 ▶️ {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
             </a>
+             <div style="font-size: 10px;">{{ thing.filename.replace('+', ' ') }}</div>
         </div>
         <div>
-            <a href="/audio/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">Search</a>
+            <a href="/audio/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">🔍</a>
             <a href="https://audio-manager.s3.amazonaws.com/{{ g.group_id }}/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
             <a target="_blank" href="/audio/{{ group.id }}/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
         </div>
     </div>
 
-    <div>
+    <div style="margin: 8px 0;">
         <i>{{ thing.description }}</i>
     </div>
 
-    <hr>
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;"
         class="audio-player" id="{{ thing.filename }}">
     </div>
-    <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: end;">
         <div style="font-style: italic;" class="tags">
             {% if thing.tags != '' %}
                 {% for tag in thing.tags.strip().split(',') %}
@@ -30,7 +30,7 @@
                 {% endfor %}
             {% endif %}
         </div>
-        <div><a href="/audio/{{ group.id }}#{{ thing.record_date }}">{{ thing.record_date }}</a></div>
+        {# <div><a href="/audio/{{ group.id }}#{{ thing.record_date }}">{{ thing.record_date }}</a></div> #}
     </div>
 </div>
 

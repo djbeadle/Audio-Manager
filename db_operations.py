@@ -148,5 +148,6 @@ def get_next_asset_id():
     cur.execute('SELECT asset_id - 1 FROM asset_counter WHERE rowid = 1')
     x = cur.fetchone()
     cur.execute('COMMIT;')
+    db.commit()
 
     return x[0]

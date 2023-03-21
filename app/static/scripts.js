@@ -3,9 +3,9 @@ function showAudioPlayer(filename) {
 }
 
 function changeTrack(filename, wavesurfer) {
+    document.querySelector('[data-action="play"]').innerText = "Loading...";
+
     wavesurfer.pause();
     wavesurfer.load(`https://audio-manager.s3.amazonaws.com/${filename}`);
-
-    let player = document.getElementById("static-audio-player");
 }
 
