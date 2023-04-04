@@ -94,10 +94,7 @@ def create_app(config_name):
       print(e)
       
     from app.landing import landing_bp
-    if config_name.upper() == 'PRODUCTION':
-      app.register_blueprint(landing_bp, url_prefix='/audio')
-    else:
-      app.register_blueprint(landing_bp)
+    app.register_blueprint(landing_bp)
 
     # Select the desired config object from FLASK_ENV environment variable
     try:
