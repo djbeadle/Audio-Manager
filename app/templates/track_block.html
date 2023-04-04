@@ -2,21 +2,20 @@
 
 <div id="{{ thing.filename|file_id }}" class="track-block" style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px; border-left: 4px solid {{ thing.record_date|date_to_color }};">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
-        <div style="max-width: 50%;">
-            <a onclick="changeTrack('{{ g.group_id }}/{{ thing.filename }}', wavesurfer)">
+        <div>
+            <a style="padding-right: 8px;" onclick="changeTrack('{{ g.group_id }}/{{ thing.filename }}', wavesurfer)">
                 ▶️ {% if thing.title != '' %} {{ thing.title }} {% else %} {{ thing.filename|unquote }} {% endif %}
             </a>
-             <div style="font-size: 10px;">{{ thing.filename.replace('+', ' ') }}</div>
+            <div style="font-size: 10px;">{{ thing.filename.replace('+', ' ') }}</div>
+            <div style="margin: 8px 0;">
+                <i>{{ thing.description }}</i>
+            </div>
         </div>
-        <div>
-            <a href="/audio/{{ group.id }}/search?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">🔍</a>
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; margin-left: auto; height: fit-content;">
+            <a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">Search</a>
             <a href="https://audio-manager.s3.amazonaws.com/{{ g.group_id }}/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
             <a target="_blank" href="/audio/{{ group.id }}/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
         </div>
-    </div>
-
-    <div style="margin: 8px 0;">
-        <i>{{ thing.description }}</i>
     </div>
 
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;"
@@ -26,11 +25,11 @@
         <div style="font-style: italic;" class="tags">
             {% if thing.tags != '' %}
                 {% for tag in thing.tags.strip().split(',') %}
-                    <a href="/audio/{{ group.id }}/search?tag={{ tag|trim }}">{{ tag }}</a>,
+                    <a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag={{ tag|trim }}">{{ tag }}</a>,&nbsp;
                 {% endfor %}
             {% endif %}
         </div>
-        {# <div><a href="/audio/{{ group.id }}#{{ thing.record_date }}">{{ thing.record_date }}</a></div> #}
+        <div><a href="{{ url_for('landing_bp.home', raw_group_id=group.id) }}#{{ thing.record_date }}">{{ thing.record_date }}</a></div>
     </div>
 </div>
 

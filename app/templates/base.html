@@ -2,19 +2,12 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.css'>
-    <link rel='stylesheet' href='/audio/static/style.css'>
+    <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
     <script data-goatcounter="https://audio.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-    <script src='/audio/static/scripts.js'></script>
-
-
-    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='wavesurfer_6_6.js') }}"></script>
 
     <style>
-        .flex-spacer {
-            flex-shrink: 2;
-            flex-grow: 2;
-        }
-        
         body {
             max-width: unset;
         }
@@ -31,17 +24,16 @@
     {% endblock %}
 
 </head>
-<body style="margin: 0; padding: 0; touch-action: none;">
-    <div style="width: 100vw; height: 100vh; padding: 0; display: flex; flex-direction: row; align-items: space-around; overflow-x: hidden;">
-        <div class="flex-spacer"></div>
-        <div style="overflow-y: none; {% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
+<body style="margin: 0; padding: 0 0 100px 0; touch-action: none;">
+    <div style="width: 100vw; padding: 0; display: flex; flex-direction: row; justify-content: center; overflow-x: hidden;">
+        <div style="{% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
             <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                 <nav style="align-self: flex-start;">
-                    <a href="/audio/{{ group.id }}">Home</a>
+                    <a href="{{ url_for('landing_bp.home', raw_group_id=group.id) }}">Home</a>
                     <!-- <a style="margin-left: 50px;" href="/audio/{{ group.id }}/uploader">Upload</a> -->
                 </nav>
                 <!-- height: 95 to leave room for navigation -->
-                <div style="height: 95vh; overflow-y: scroll; width:95%;">
+                <div style="width:95%; display: flex; flex-direction: column; align-content: center;">
                     {% block content %}
                     {% endblock %}
                 </div>            
@@ -60,7 +52,6 @@
             </div>
             {% endblock %}
         </div>
-        <div class="flex-spacer"></div>
     </div>
 </div>
 
