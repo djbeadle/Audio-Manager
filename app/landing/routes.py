@@ -55,9 +55,26 @@ def home(raw_group_id):
 
 @landing_bp.route('/<raw_group_id>/edit', methods=['GET'])
 def edit(raw_group_id):
+
+    ids_raw = map(lambda x: get_single_thing(x), request.args['filenames'].split(';'))
+    id_dicts = []
+    for id_raw in ids_raw:
+        id = dict(id_raw)
+        
+        # Remove blank tags
+        list_of_tags = [x for x in id['tags'].split(',') if x.strip() != '']
+
+        if 'partial' in [x for x in list_of_tags]:
+            list_of_tags.remove('partial')
+            id['tags'] = ','.join(list_of_tags)
+            id['partial'] = True
+        else:
+            id['partial'] = False
+        id_dicts.append(id)
+
     return render_template(
         'edit.html',
-        ids=map(lambda x: get_single_thing(x), request.args['filenames'].split(';')),
+        ids=id_dicts,
         group={ 'id': g.group_id },
         song_names=get_song_names()
     )
@@ -66,6 +83,7 @@ def edit(raw_group_id):
 def save_edit():
     list(map(lambda x: update_track(**x), request.json))
     return '', 200
+
 
 @landing_bp.route('/<raw_group_id>/track/<track_id>')
 def track(raw_group_id,track_id):

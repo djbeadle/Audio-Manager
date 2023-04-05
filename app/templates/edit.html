@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block extra_head %}
-<script type="text/javascript" src="/audio/static/fuzzyset.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='fuzzyset.js') }}"></script>
 {% endblock %}
 
 {% block max_width %}
@@ -12,7 +12,7 @@ max-width: 800px;
 <style>
     .apply-to-all {
         border-radius: 8px;
-        background: lightgray;
+        background: var(--background-alt);
         padding: 16px 24px;
         margin-bottom: 12px;
     }
@@ -96,11 +96,12 @@ max-width: 800px;
                 description: document.querySelector(`#${track.id} .description`).value,
                 date: document.querySelector(`#${track.id} .date`).value,
                 tags: document.querySelector(`#${track.id} .tags`).value,
+                partial: document.querySelector(`#${track.id} .partial`).checked,
             })
         }
 
         fetch(
-            '/audio/edit', {
+            '{{ url_for("landing_bp.save_edit") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -109,7 +110,11 @@ max-width: 800px;
             }
         ).then((response) => {
             if (response.ok) {
+                document.getElementById('save_status').textContent = "Saved!"
                 // window.location.href = '/{{ group.id }}/uploader';
+            }
+            else {
+                document.getElementById('save_status').textContent = response.body;
             }
         });
 
@@ -157,7 +162,7 @@ max-width: 800px;
 </datalist>
 
 <div class="apply-to-all">
-    <h2>Apply to all Uploaded Recordings</h2>
+    <h2>Apply to all</h2>
     <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">
         <div class="form-field">
             <label for="recorder">Recorded By</label>
@@ -189,7 +194,6 @@ max-width: 800px;
             <input id="all-tags" type="text" name="tags">
             <div>
                 <a onclick="document.getElementById('all-tags').value += 'Performance, ';">Performance</a>,
-                <a onclick="document.getElementById('all-tags').value += 'Partial, ';">Partial</a>,
                 <a onclick="document.getElementById('all-tags').value += 'Mashup, '">Mashup</a>
             </div>
         </div>
@@ -204,7 +208,7 @@ max-width: 800px;
     <div id="track_{{ recording.id }}" class="id-edit-box" style="margin-bottom: 24px;">
         <h2>{{ recording.filename|unquote }}</h2>
         <input class="id" value="{{ recording.id }}" type="hidden">
-        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
             <div class="">
                 <label for="song_name">Song Name</label>
                     <input
@@ -214,6 +218,20 @@ max-width: 800px;
                         value="{{ recording.title }}"
                     >
             </div>
+
+            <div style="max-width: 200px;">
+                <label for="partial">Partial</label>
+                <input
+                    id="partial"
+                    type="checkbox"
+                    name="partial"
+                    class="partial"
+                    value="true"
+                    autocomplete="off" {# Prevents Firefox from restoring checkbox state on refresh  #}
+                    {% if recording['partial'] %}checked{% endif %}
+                >
+            </div>
+
             <div class="">
                 <label for="tags">Tags</label>
                 <input type="text" name="tags" class="tags" value="{{ recording.tags }}"  placeholder="sax solo, drum break">
@@ -233,21 +251,25 @@ max-width: 800px;
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="">
                 <label for="recorder">Recorded By</label>
-                <input type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorded_by }}">
+                <input id="recorder" type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorded_by }}">
             </div>
 
             <div class="">
-                <label for="location">Recording Location<label>
-                <input type="text" name="location" class="location" placeholder="Culture Lab" value="{{ recording.location }}" >
+                <label for="location">Recording Location</label>
+                <input id="location" type="text" name="location" class="location" placeholder="Culture Lab" value="{{ recording.location }}" >
             </div>
+
             <div class="">
                 <label for="date">Recording Date</label>
-                <input type="date" name="date" class="date" value="{{ recording.record_date }}">
+                <input id="date" type="date" name="date" class="date" value="{{ recording.record_date }}">
             </div>
         </div>
     </div>
     {% endfor %}
-    <button type="submit">Save and next</button>
+    <div style="display: flex; flex-direction: column; align-items: end;">
+        <button style="margin-left:auto;" type="submit">Save and next</button>
+        <div style="color: green; width: fit-content;" id="save_status"></div>
+    </div>
     <div class="clearfix"></div>
 </form>
 

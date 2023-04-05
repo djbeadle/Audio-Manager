@@ -14,7 +14,7 @@
         <div style="display: flex; flex-direction: row; flex-wrap: wrap; margin-left: auto; height: fit-content;">
             <a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">Search</a>
             <a href="https://audio-manager.s3.amazonaws.com/{{ g.group_id }}/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
-            <a target="_blank" href="/audio/{{ group.id }}/edit?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
+            <a target="_blank" href="{{ url_for('landing_bp.edit', raw_group_id=group.id) }}?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
         </div>
     </div>
 

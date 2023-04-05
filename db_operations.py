@@ -59,9 +59,15 @@ def get_song_names():
     cur.execute('SELECT name FROM songs;')
     return cur.fetchall()
 
-def update_track(id, description, title, date, recorded_by, location, tags):
+def update_track(id, description, title, date, recorded_by, location, tags, partial=None):
     db = get_db()
     cur = db.cursor()
+
+    if bool(partial) == True:
+        if tags.strip() == '': 
+            tags = 'partial'
+        else: 
+            tags = ','.join(tags.split(',') + ['partial'])
 
     cur.execute("""
         UPDATE recordings
@@ -75,10 +81,14 @@ def update_track(id, description, title, date, recorded_by, location, tags):
         WHERE
             id = ?;
     """, [
-        description, title, date,
+        description,
+        title,
+        date,
         recorded_by,
         location,
-        tags, id])
+        tags.lower(),
+        id
+    ])
     
     db.commit()
 

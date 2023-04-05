@@ -6,7 +6,7 @@
     .sticky-header {
         position: sticky;
         top: 0;
-        background-color: white;
+        background-color: var(--background-body);
         padding-bottom: 8px;
     }
 </style>
@@ -21,7 +21,7 @@
         <summary>Search by Song Name</summary>
         <ul>
             {% for name, count in song_counts|sort(attribute='1')|reverse %}
-            <li><a href="/audio/{{ group.id }}/search?song={{ name }}">{{ count }} - {{ name }}</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}/search?song={{ name }}">{{ count }} - {{ name }}</a></li>
             {% endfor %}
         </ul>
     </details>
@@ -29,16 +29,16 @@
     <details>
         <summary>Search by Tag</summary>
         <ul>
-            <li><a href="/audio/{{group.id}}/search?tag=midi">Midi</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=draft">Draft</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=Performance">Performance</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=holiday">Holiday</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=session">Session</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=NOLA 2020">NOLA 2020</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=Preservation Hall">Preservation Hall</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=poor audio">Poor audio</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=cell phone recording">Cell phone recording</a></li>
-            <li><a href="/audio/{{group.id}}/search?tag=questionable title">Possibly incorrect title</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=midi">Midi</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=draft">Draft</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=Performance">Performance</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=holiday">Holiday</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=session">Session</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=NOLA 2020">NOLA 2020</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=Preservation Hall">Preservation Hall</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=poor audio">Poor audio</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=cell phone recording">Cell phone recording</a></li>
+            <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=questionable title">Possibly incorrect title</a></li>
         </ul>
     </details>
 </div>
