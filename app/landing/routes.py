@@ -1,6 +1,6 @@
 from flask import redirect, render_template, Response, request, g
 from app.landing import landing_bp
-from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track
+from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track, list_things_on_date
 
 import json, urllib
 from uuid import UUID
@@ -51,6 +51,19 @@ def home(raw_group_id):
         group=group_info,
         song_counts=get_song_counts(g.group_id),
         things=list_all_things(g.group_id),
+    )
+
+@landing_bp.route('/<raw_group_id>/<record_date>', methods=['GET'])
+def list_group_record_date(raw_group_id, record_date):
+    group_info = get_group_info(g.group_id)
+    group_info = dict(zip(group_info.keys(), group_info))
+    group_info['id'] = raw_group_id
+
+    return render_template(
+        'landing.html',
+        group=group_info,
+        song_counts=get_song_counts(g.group_id),
+        things=list_things_on_date(g.group_id, record_date),
     )
 
 @landing_bp.route('/<raw_group_id>/edit', methods=['GET'])

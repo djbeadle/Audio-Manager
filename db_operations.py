@@ -13,10 +13,13 @@ def get_db():
         db.row_factory = sqlite3.Row
     return db
 
-def get_song_counts(group_id):
+def get_song_counts(group_id, record_date=None):
     cur = get_db().cursor()
 
-    return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? GROUP BY title;", [group_id]).fetchall()
+    if record_date is None:
+        return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? GROUP BY title;", [group_id]).fetchall()
+    else:
+        return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? AND record_date = ? GROUP BY title;", [group_id, record_date]).fetchall()
 
 
 def record_upload(filename, event_time, size, etag, group_id):
@@ -113,6 +116,26 @@ def list_all_things(group_id):
     except Exception as e:
         print("An error occurred fetching all of the things.")
         print(e)
+
+
+def list_things_on_date(group_id, record_date):
+    db = get_db()
+    cur = db.cursor()
+  
+    try:
+        cur.execute("""
+            SELECT *
+            FROM recordings
+            WHERE group_id = ?
+                AND record_date = ?;
+        """, [group_id, record_date])
+        rows = cur.fetchall()
+        return rows
+
+    except Exception as e:
+        print("An error occurred fetching all of the things.")
+        print(e)
+
 
 def search_for_things(tag, group_id):
     db = get_db()
