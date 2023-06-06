@@ -1,4 +1,4 @@
-{% macro track_block(thing, group) -%}
+{% macro track_block(thing, group, show_edit=True) -%}
 
 <div id="{{ thing.filename|file_id }}" class="track-block" style="border: 1px solid black; padding: 8px 16px; margin-bottom: 12px; border-left: 4px solid {{ thing.record_date|date_to_color }};">
     <div style="width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
@@ -14,7 +14,9 @@
         <div style="display: flex; flex-direction: row; flex-wrap: wrap; margin-left: auto; height: fit-content;">
             <a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?song={{ thing.title }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">Search</a>
             <a href="https://audio-manager.s3.amazonaws.com/{{ g.group_id }}/{{thing.filename}}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;margin-right: 8px;">⬇️</a>
+            {% if show_edit %}
             <a target="_blank" href="{{ url_for('landing_bp.edit', raw_group_id=group.id) }}?filenames={{ thing.filename|file_id }}" style="border: 1px solid black; padding: 4px 8px; border-radius: 4px;">Edit</a>
+            {% endif %}
         </div>
     </div>
 

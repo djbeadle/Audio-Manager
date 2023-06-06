@@ -16,6 +16,7 @@
 <h2>{{ group.name }}</h2>
 <p>{{ group.description }}</p>
 
+{% if show_search|default(True) %}
 <div>
     <details>
         <summary>Search by Song Name</summary>
@@ -42,13 +43,19 @@
         </ul>
     </details>
 </div>
+{% endif %}
 
 {% for date, recordings_by_date in things|groupby("record_date")|reverse %}
-    <h3 id="{{date|trim}}" class="sticky-header" style="margin-bottom:0;">{{ date|trim }}</h3>
+    <h3 id="{{date|trim}}" class="sticky-header" style="margin-bottom:0;">{{ date|trim }} <a href="{{ url_for('landing_bp.list_group_record_date', raw_group_id=group.id, record_date=date|trim) }}">🔗</a></h3>
     {% for location, recordings_by_date_and_loc in recordings_by_date|groupby("location") %}
-        <h4 style="margin-top:0;">{{ location }}</h4>
+        <h4 style="margin-top:0;">
+            {{ location }}
+            {% if show_edit|default(True) %}
+            <a href="{{ url_for('landing_bp.edit', raw_group_id=group.id) }}?filenames={% for r_thing in recordings_by_date_and_loc|sort(attribute='filename') %}{{r_thing.id}};{% endfor %}"> (edit all)</a>
+            {% endif %}
+        </h4>
         {% for r_thing in recordings_by_date_and_loc|sort(attribute="filename") %}
-            {{ track_block(r_thing, group) }}
+            {{ track_block(r_thing, group, show_edit) }}
         {% endfor %}
     {% endfor %}
 {% else %}

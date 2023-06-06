@@ -61,6 +61,8 @@ def list_group_record_date(raw_group_id, record_date):
 
     return render_template(
         'landing.html',
+        show_search=False,
+        show_edit=False,
         group=group_info,
         song_counts=get_song_counts(g.group_id),
         things=list_things_on_date(g.group_id, record_date),
