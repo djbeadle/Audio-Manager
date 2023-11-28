@@ -52,7 +52,7 @@
         <h4 style="margin-top:0;">
             {{ location }}
             {% if show_edit|default(True) %}
-            <a href="{{ url_for('landing_bp.edit', raw_group_id=group.id) }}?filenames={% for r_thing in recordings_by_date_and_loc|sort(attribute='filename') %}{{r_thing.id}};{% endfor %}"> (edit all)</a>
+            <a href="{{ url_for('landing_bp.edit', raw_group_id=group.id) }}?filenames={% for r_thing in recordings_by_date_and_loc|sort(attribute='filename') %}{{r_thing.filename|file_id}};{% endfor %}"> (edit all)</a>
             {% endif %}
         </h4>
         {% for r_thing in recordings_by_date_and_loc|sort(attribute="filename") %}
