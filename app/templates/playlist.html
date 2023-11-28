@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% from 'track_block.html' import track_block %}
+
+{% block styles %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ playlist.title }}</h1>
+<h2>{{ playlist.description }}</h2>
+<div>{{ playlist.created_at }}</div>
+
+<ul>
+    {% for track in tracks %}
+    {% if track is not none %}
+    {{ track_block(track, group, show_edit, playlist_mode=True) }}
+    {% endif %}
+    {% endfor %}
+</ul>
+
+<div>
+</div>
+{% endblock %}

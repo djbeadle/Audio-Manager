@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% from 'track_block.html' import track_block %}
+
+{% block extra_head %}
+<script src="{{ url_for('static', filename='Sortable.min.js') }} "></script>
+<script src="{{ url_for('static', filename='micromodal.min.js') }} "></script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .control {
+        justify-content: center;
+        border: 1px solid var(--text-muted);
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ playlist.title }}</h1>
+<h2>{{ playlist.description }}</h2>
+<div>{{ playlist.created_at }}</div>
+
+<div style="display: flex; flex-direction: row; justify-content: end;">
+    <button style="max-width: 150px;">Discard ❌</button>
+    <button onclick="save()" style="max-width: 150px;">Save ✅</button>
+</div>
+
+<br>
+<br>
+
+<div id="items">
+    {% for track in tracks %}
+    <div
+        class="track"
+        data-trackid="{{ track.filename|file_id }}"
+        style="display: flex; flex-direction: row; margin-bottom: 16px; align-items: center; flex-wrap: nowrap;"
+    >
+        <div style="display: flex; flex-direction: column; margin-right: 8px; justify-items: space-between;">
+            <div class="control handle">↕️</div>
+            <div class="control remove">❌ </div>
+        </div>
+        <div style="flex-basis: 100%;">
+            {{ track_block(track, group, show_edit, playlist_mode=True) }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    var changesMade = false;
+
+    var el = document.getElementById('items');
+    var sortable = Sortable.create(
+        el,
+        {
+            handle: '.handle',
+            onSort: () => changesMade=true,
+        }
+    );
+
+    function remove(){
+        changesMade = true;
+        const trackid = this.parentElement.parentElement.dataset['trackid'];
+        document.querySelector(`[data-trackid="${trackid}"]`).remove();
+    };
+
+    // Ask for confirmation before leaving if changes have been made
+    window.onbeforeunload = function(){
+        if (changesMade){
+            event.preventDefault();
+        }
+    }
+
+    function save(){
+        const updated_tracks = Array.from(document.getElementsByClassName('track')).map(x => x.dataset['trackid']);
+        fetch(
+            '{{ url_for('landing_bp.save_playlist', playlist_id=playlist_id) }}',
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({'updated_tracks': updated_tracks})
+            }
+        );
+    };
+
+    Array.from(document.getElementsByClassName('remove')).forEach(x => {
+        x.addEventListener('click', remove)
+    });
+</script>
+{% endblock %}

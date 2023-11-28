@@ -12,6 +12,7 @@
             "env": {
                 "FLASK_APP": "myapp.py",
                 "FLASK_ENV": "development",
+                "FLASK_DEBUG": "True",
                 "DISABLE_AUTO_UPDATE": "true"
             },
             "args": [

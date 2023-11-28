@@ -49,17 +49,26 @@ def create_app(config_name):
 
     try:
       cur.executescript("""
+        CREATE TABLE IF NOT EXISTS users(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          sub TEXT NOT NULL,
+          display_name TEXT,
+          email TEXT NOT NULL,
+          date_joined TEXT NOT NULL
+        ); 
+    
         CREATE TABLE IF NOT EXISTS recordings(
-          -- Fields from AWS:
+          -- Mandatory, non-AWS fields
           id INTEGER PRIMARY KEY,
+          track_id INTEGER NOT NULL, -- starts at 0 in each group
+          group_id INTEGER NOT NULL,
+          
+          -- Fields from AWS:
           filename TEXT NOT NULL,
           etag TEXT NOT NULL,
           size INTEGER NOT NULL,
           upload_date TEXT DEFAULT '',
           
-          -- Mandatory, non-AWS fields
-          group_id INTEGER NOT NULL,
-
           -- User definable fields:
           title TEXT DEFAULT '', -- A display name
           version TEXT DEFAULT '', -- ex: 1, 1.4, 1.6
@@ -70,12 +79,38 @@ def create_app(config_name):
           tags TEXT DEFAULT '', -- A comma-separated list
           status INTEGER DEFAULT 0 -- Not sure what this is going to be for yet 
         );
+                        
+        CREATE TABLE IF NOT EXISTS playlists(
+          id INTEGER PRIMARY KEY,
+          title TEXT,
+          description TEXT DEFAULT "",
+          date_created TEXT NOT NULL,
+          
+          group_id INTEGER NOT NULL,
+          owner_id INTEGER NOT NULL,
+
+          tracks TEXT DEFAULT '', -- comma separated list of track ids in playlist order
+          
+          view_mode INTEGER DEFAULT 0, -- 0: public viewing 1: private, always owner plus anyone in allowed_viewers
+          allowed_viewers TEXT, -- Comma separated list of user ids
+          FOREIGN KEY("owner_id") REFERENCES "users"("id")
+          FOREIGN KEY("group_id") REFERENCES "groups"("id")
+        );
 
         CREATE TABLE IF NOT EXISTS groups(
           id INTEGER PRIMARY KEY,
+          alias TEXT,
           name TEXT NOT NULL,
-          description TEXT DEFAULT '',
-          status INTEGER DEFAULT 0
+          description TEXT DEFAULT "",
+          
+          owner_id INTEGER NOT NULL,
+          
+          upload_mode INTEGER DEFAULT 0, -- 0: public uploads 1: private, always owner plus anyone in allowed_uploaders
+          allowed_uploaders TEXT, -- Comma separated list of user ids
+          view_mode INTEGER DEFAULT 0, -- 0: public viewing 1: private, always owner plus anyone in allowed_viewers
+          allowed_viewers TEXT, -- Comma separated list of user ids   
+          
+          FOREIGN KEY("owner_id") REFERENCES "users"("id")
         );
 
         CREATE TABLE IF NOT EXISTS asset_counter(
@@ -86,7 +121,9 @@ def create_app(config_name):
 
         CREATE TABLE IF NOT EXISTS "songs" (
           "name" TEXT,
-          "gdrive" TEXT
+          "gdrive" TEXT,
+          "group_id"	INTEGER NOT NULL,
+	        FOREIGN KEY("group_id") REFERENCES "groups"("id")
         );
       """)
     except Exception as e:

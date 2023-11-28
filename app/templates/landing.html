@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from 'track_block.html' import track_block %}
+{% from 'song_search_block.html' import song_search_block %}
 
 {% block styles %}
 <style>
@@ -15,6 +16,8 @@
 {% block content %}
 <h2>{{ group.name }}</h2>
 <p>{{ group.description }}</p>
+
+{{ song_search_block(song_names) }}
 
 {% if show_search|default(True) %}
 <div>
@@ -55,7 +58,7 @@
             {% endif %}
         </h4>
         {% for r_thing in recordings_by_date_and_loc|sort(attribute="filename") %}
-            {{ track_block(r_thing, group, show_edit) }}
+            {{ track_block(r_thing, group, show_edit|default(True)) }}
         {% endfor %}
     {% endfor %}
 {% else %}

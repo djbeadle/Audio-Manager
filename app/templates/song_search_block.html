@@ -1,0 +1,25 @@
+{% macro song_search_block(song_names) -%}
+
+{% block styles %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+    <datalist id="song_name_search">
+        {% for name in song_names %}
+        <option value="{{ name.name }}">{{ name.name }}</option>
+        {% endfor %}
+    </datalist>
+
+    <label for="song_name">Song Name</label>
+    <input
+        list="song_names"
+        class="song_name"
+
+    >
+</div>
+{% endblock %}
+
+{% endmacro %}

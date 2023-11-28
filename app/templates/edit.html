@@ -2,6 +2,9 @@
 
 {% block extra_head %}
 <script type="text/javascript" src="{{ url_for('static', filename='fuzzyset.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='tagify.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='tagify.polyfills.min.js') }}"></script>
+<link href="{{ url_for('static', filename='tagify.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block max_width %}
@@ -10,16 +13,6 @@ max-width: 800px;
 
 {% block styles %}
 <style>
-    .apply-to-all {
-        border-radius: 8px;
-        background: var(--background-alt);
-        padding: 16px 24px;
-        margin-bottom: 12px;
-    }
-    .apply-to-all h2 {
-        margin-top: 0;
-    }
-
     .form-field {
         margin-bottom: 16px;
     }
@@ -34,7 +27,6 @@ max-width: 800px;
     }
 
     button {
-        float: right;
         background-color: #0076d1;
         color: white;
     }
@@ -67,22 +59,6 @@ max-width: 800px;
 
 {% block scripts %}
 <script>
-    let fs = FuzzySet([
-        {% for name in song_names %}
-        "{{ name.name|safe }}",
-        {% endfor %}
-    ]);
-
-    const els = document.getElementsByClassName('song_name');
-    Array.from(els).forEach((el) => {
-        if (el.title.trim() === ''){
-            var tmp = fs.get(el.getAttribute('fallbackValue').split('_')[1]);
-            if (tmp !== null){
-                el.value = tmp[0][1];
-            }
-        }
-    })
-
     function save() {
         const to_submit = [];
         const edited_tracks = document.getElementsByClassName("id-edit-box");
@@ -161,6 +137,8 @@ max-width: 800px;
     {% endfor %}
 </datalist>
 
+<h2>Edit</h2>
+{% if ids|length > 1 %}
 <div class="apply-to-all">
     <h2>Apply to all</h2>
     <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">
@@ -202,24 +180,26 @@ max-width: 800px;
     <button onclick="apply_to_all();">Apply to all</button>
     <div class="clearfix"></div>
 </div>
+{% endif %}
 
 <form onsubmit="event.preventDefault(); save();">
     {% for recording in ids %}
     <div id="track_{{ recording.id }}" class="id-edit-box" style="margin-bottom: 24px;">
         <h2>{{ recording.filename|unquote }}</h2>
         <input class="id" value="{{ recording.id }}" type="hidden">
-        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-            <div class="">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div style="flex-basis: 400px; width: 100%; display: flex; flex-direction: column;">
                 <label for="song_name">Song Name</label>
-                    <input
-                        list="song_names"
-                        class="song_name"
-                        fallbackValue="{{ recording.filename|trim }}" 
-                        value="{{ recording.title }}"
-                    >
+                <input
+                    name="song_name"
+                    list="song_names"
+                    class="song_name"
+                    fallbackValue="{{ recording.filename|trim }}" 
+                    value="{{ recording.title }}"
+                >
             </div>
 
-            <div style="max-width: 200px;">
+            <div style="display: flex; flex-direction: column; margin-right: auto; max-width: 200px;">
                 <label for="partial">Partial</label>
                 <input
                     id="partial"
@@ -232,34 +212,46 @@ max-width: 800px;
                 >
             </div>
 
-            <div class="">
-                <label for="tags">Tags</label>
-                <input type="text" name="tags" class="tags" value="{{ recording.tags }}"  placeholder="sax solo, drum break">
-            </div>
-
             {% if loop.nextitem is defined %}
-            <div style="align-self: end;">
+            <div style="margin-top: 8px; align-self: end;">
                 <button type="button" class="skip-button" onclick="document.querySelector('#track_{{ loop.nextitem.id }}').scrollIntoView(); document.querySelector('#track_{{ loop.nextitem.id }} .song_name').focus();">Next -></button>
             </div>
             {% endif %}
         </div>
-        <div style="width: 100%;">
+
+        <div style="margin-top: 8px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div style="width: 100%; display: flex; flex-direction: column;">
+               
+                <label for="tags">Tags</label>
+                <input type="text" name="tags" class="tags"  >
+            </div>
+
+        </div>
+        <div style="display: flex; flex-direction: column; width: 100%;">
             <label for="song_description">Description</label>
             <textarea style="width: 100%; height: 48px;" type="paragraph" class="description"
                 placeholder="Experimental run in cut time.">{{ recording.description }}</textarea>
         </div>
-        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
             <div class="">
                 <label for="recorder">Recorded By</label>
-                <input id="recorder" type="text" name="recorder" class="recorder" placeholder="Louis Armstrong's iPhone" value="{{ recording.recorded_by }}">
+                <input
+                    id="recorder"
+                    type="text"
+                    name="recorder"
+                    class="recorder"
+                    style="width: 100%;"
+                    placeholder="Louis Armstrong's iPhone"
+                    value="{{ recording.recorded_by }}"
+                >
             </div>
 
-            <div class="">
+            <div class="" style="width: 100%;">
                 <label for="location">Recording Location</label>
                 <input id="location" type="text" name="location" class="location" placeholder="Culture Lab" value="{{ recording.location }}" >
             </div>
 
-            <div class="">
+            <div class="" style="width: 100%;">
                 <label for="date">Recording Date</label>
                 <input id="date" type="date" name="date" class="date" value="{{ recording.record_date }}">
             </div>
@@ -271,6 +263,30 @@ max-width: 800px;
         <div style="color: green; width: fit-content;" id="save_status"></div>
     </div>
     <div class="clearfix"></div>
+    <script>
+        const SONG_NAMES = [{% for name in song_names %}{{ name[0]|tojson }},{% endfor %}];
+        // The DOM element you wish to replace with Tagify
+        var tagElements = document.querySelectorAll('input[name=song_name]');
+        // initialize Tagify on the above input node reference
+        tagElements.forEach(x => new Tagify(x, {
+            mode: "select",
+            maxItems: 3,
+            whitelist: SONG_NAMES,
+            transformTag: x => x.value.replace(','),
+            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value.replace(',', '')).join(',')
+        }))
+
+        const TAGS = ['performance', 'nola', 'preservation hall', 'low quality', 'high quality'];
+        // The DOM element you wish to replace with Tagify
+        var tagElements = document.querySelectorAll('input[name=tags]');
+        // initialize Tagify on the above input node reference
+        tagElements.forEach(x => new Tagify(x, {
+            whitelist: TAGS,
+            transformTag: x => x.value.replace(','),
+            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value.replace(',', '')).join(',')
+        }))
+        
+    </script>
 </form>
 
 {% endblock %}

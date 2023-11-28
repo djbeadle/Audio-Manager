@@ -1,6 +1,8 @@
-from flask import redirect, render_template, Response, request, g
+from flask import redirect, render_template, Response, request, g, url_for
 from app.landing import landing_bp
-from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track, list_things_on_date
+from db_operations import add_new_song, get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track, list_things_on_date, get_playlist, update_playlist
+
+import db_operations as db_ops
 
 import json, urllib
 from uuid import UUID
@@ -91,7 +93,7 @@ def edit(raw_group_id):
         'edit.html',
         ids=id_dicts,
         group={ 'id': g.group_id },
-        song_names=get_song_names()
+        song_names=get_song_names(g.group_id)
     )
 
 @landing_bp.route('/edit', methods=['POST'])
@@ -101,13 +103,32 @@ def save_edit():
 
 
 @landing_bp.route('/<raw_group_id>/track/<track_id>')
-def track(raw_group_id,track_id):
+def track(raw_group_id, track_id):
     track_obj = get_single_thing(track_id)
     return render_template(
         "track.html",
         group={ 'id': g.group_id },
         track_obj=track_obj
     )
+
+@landing_bp.route('/<raw_group_id>/songs')
+def songs(raw_group_id):
+    suggestions = get_song_names(raw_group_id)
+
+    return render_template(
+        "songs.html",
+        group={ 'id': g.group_id },
+        songs=suggestions
+    )
+
+@landing_bp.route('/<raw_group_id>/songs', methods=['POST'])
+def create_song(raw_group_id):
+    new_title = request.form['new-title'].strip()
+    
+    if add_new_song(g.group_id, new_title) == -1:
+        return 'A song with this title already exists!', 304
+    
+    return redirect(url_for('landing_bp.songs', raw_group_id=raw_group_id))
 
 
 @landing_bp.route('/info', methods=['GET'])
@@ -189,3 +210,29 @@ def get_presigned_s3_upload_url(raw_group_id):
     x = generate_presigned_post(filename_with_folder, params['type'], fields)
     # x['fields']['content_type'] = file_type
     return json.dumps(x)
+
+
+@landing_bp.route('/playlist/<playlist_id>')
+def get_playlist_route(playlist_id):
+    playlist = get_playlist(playlist_id)
+    playlist = dict(zip(playlist.keys(), playlist))
+
+    tracks = [ db_ops.get_track(id) for id in playlist['tracks'].split(',')]
+    return render_template('playlist.html', playlist_mode=True, tracks=tracks, playlist=playlist, group={'id': -1})
+    # return json.dumps(list(get_playlist(playlist_id)))
+
+
+@landing_bp.route('/playlist_edit/<playlist_id>')
+def edit_playlist(playlist_id):
+    playlist = get_playlist(playlist_id)
+    playlist = dict(zip(playlist.keys(), playlist))
+
+    tracks = [ db_ops.get_track(id) for id in playlist['tracks'].split(',')]
+    return render_template('playlist_edit.html', playlist_mode=True, tracks=tracks, playlist=playlist, group={'id': -1}, playlist_id=playlist_id)
+
+@landing_bp.post('/playlist_edit/<playlist_id>')
+def save_playlist(playlist_id):
+    updated_tracks = request.json['updated_tracks']
+    update_playlist(playlist_id, updated_tracks)
+
+    return redirect(url_for('landing_bp.edit_playlist', playlist_id=playlist_id))

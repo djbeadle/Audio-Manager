@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='water.min.css')}}">
@@ -17,9 +18,21 @@
             max-width: unset;
         }
 
-        html, body {
-              overflow-x:hidden 
-        } 
+        html,
+        body {
+            overflow-x: hidden
+        }
+
+        .apply-to-all {
+            border-radius: 8px;
+            background: var(--background-alt);
+            padding: 16px 24px;
+            margin-bottom: 12px;
+        }
+
+        .apply-to-all h2 {
+            margin-top: 0;
+        }
     </style>
 
     {% block extra_head %}
@@ -29,8 +42,10 @@
     {% endblock %}
 
 </head>
+
 <body style="margin: 0; padding: 0 0 100px 0; touch-action: none;">
-    <div style="width: 100vw; padding: 0; display: flex; flex-direction: row; justify-content: center; overflow-x: hidden;">
+    <div
+        style="width: 100vw; padding: 0; display: flex; flex-direction: row; justify-content: center; overflow-x: hidden;">
         <div style="{% block max_width %}max-width: 600px;{% endblock %} width:100%; ">
             <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                 <nav style="align-self: flex-start;">
@@ -41,16 +56,15 @@
                 <div style="width:95%; display: flex; flex-direction: column; align-content: center;">
                     {% block content %}
                     {% endblock %}
-                </div>            
+                </div>
             </div>
 
             {% block static_audio_player %}
-             <div style="position: fixed;bottom: 0; bottom: calc(env(safe-area-inset-bottom)); touch-action: none;background-color: var(--background-body); width:100%; height: 100px; overflow-y:hidden; display: flex; flex-direction: row;flex: 1;">
+            <div id="audio_player"
+                style="position: fixed;bottom: 0; bottom: calc(env(safe-area-inset-bottom)); touch-action: none;background-color: var(--background-body); width:100%; height: 100px; overflow-y:hidden; display: flex; flex-direction: row;flex: 1;">
 
-                <button
-                    style="align-self: end;width:110px;flex-grow: 0;" type="button" class="btn btn-primary" data-action="play"
-                    onclick="changeText()"
-               >
+                <button style="align-self: end;width:110px;flex-grow: 0;" type="button" class="btn btn-primary"
+                    data-action="play" onclick="changeText()">
                     Play / Pause
                 </button>
                 <div style="height:200px; width:100%;flex-grow:1;" id="waveform"></div>
@@ -58,59 +72,107 @@
             {% endblock %}
         </div>
     </div>
-</div>
+    </div>
 
-{% block scripts %}
-<script>
+    {% block scripts %}
+    <script>
 
-const soundEffect = new Audio();
-soundEffect.autoplay = true;
+        const soundEffect = new Audio();
+        soundEffect.autoplay = true;
 
-var wavesurfer = WaveSurfer.create({
-    container: '#waveform',
-    backend: 'MediaElement',
-    barWidth: 3,
-    barRadius: 3,
-    cursorWidth: 1,
-    height: 200,
-    barGap: 3
-});
+        var wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            backend: 'MediaElement',
+            barWidth: 3,
+            barRadius: 3,
+            cursorWidth: 1,
+            height: 200,
+            barGap: 3
+        });
 
-// toggle play button
-document
-    .querySelector('[data-action="play"]')
-    .addEventListener(
-        'click',
-        wavesurfer.playPause.bind(wavesurfer)
-    );
+        // toggle play button
+        document
+            .querySelector('[data-action="play"]')
+            .addEventListener(
+                'click',
+                wavesurfer.playPause.bind(wavesurfer)
+            );
 
-wavesurfer.on('play', function (err) {
+        wavesurfer.on('play', function (err) {
 
-    document.querySelector('[data-action="play"]').innerText = "Pause";
-});
-wavesurfer.on('pause', function (err) {
-    document.querySelector('[data-action="play"]').innerText = "Play";
-});
-wavesurfer.on('error', function (err) {
-    console.log(err);
-});
-wavesurfer.on('ready', function () {
-    <!-- iOS Safari does not allow programatic music playing -->
-    if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
-        document.querySelector('[data-action="play"]').innerText = "Play";
-    }
-    else {
-        document.querySelector('[data-action="play"]').innerText = "Play/Pause";
-        wavesurfer.play();
-    }
-});
+            document.querySelector('[data-action="play"]').innerText = "Pause";
+        });
+        wavesurfer.on('pause', function (err) {
+            document.querySelector('[data-action="play"]').innerText = "Play";
+        });
+        wavesurfer.on('error', function (err) {
+            console.log(err);
+        });
+        wavesurfer.on('ready', function () {
+            <!-- iOS Safari does not allow programatic music playing -->
+            if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+                document.querySelector('[data-action="play"]').innerText = "Play";
+            }
+            else {
+                document.querySelector('[data-action="play"]').innerText = "Play/Pause";
+                wavesurfer.play();
+            }
+        });
 
-function changeText() {
-    if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
-        document.querySelector('[data-action="play"]').innerText = "Play/Pause";
-    }   
-}
+        function changeText() {
+            if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+                document.querySelector('[data-action="play"]').innerText = "Play/Pause";
+            }
+        }
 
-</script>
-{% endblock %}    
+    </script>
+    {% endblock %}
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-play">
+        <defs>
+            <symbol id="play">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </symbol>
+        </defs>
+    </svg>
+
+    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1">
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="modal-1-title">
+                        Micromodal
+                    </h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                </header>
+                <main class="modal__content" id="modal-1-content">
+                    <p>
+                        Try hitting the <code>tab</code> key and notice how the focus stays within the modal itself.
+                        Also, <code>esc</code> to close modal.
+                    </p>
+                </main>
+                <footer class="modal__footer">
+                    <button class="modal__btn modal__btn-primary">Continue</button>
+                    <button class="modal__btn" data-micromodal-close
+                        aria-label="Close this dialog window">Close</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    {% block extra_scripts %}
+    {% endblock %}
+    <script>
+        MicroModal.init({
+            // onShow: modal => console.info(`${modal.id} is shown`), // [1]
+            // onClose: modal => console.info(`${modal.id} is hidden`), // [2]
+            openClass: 'is-open', // [5]
+            disableScroll: true, // [6]
+            disableFocus: false, // [7]
+            awaitOpenAnimation: false, // [8]
+            awaitCloseAnimation: false, // [9]
+            debugMode: false // [10]
+        });
+    </script>
 </body>

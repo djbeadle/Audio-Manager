@@ -56,11 +56,56 @@ def get_single_thing(filename):
     return cur.fetchone()
 
 
-def get_song_names():
+def get_song_names(group_id: int):
     cur = get_db().cursor()
 
-    cur.execute('SELECT name FROM songs;')
+    cur.execute("""
+        SELECT
+            name,
+            gdrive,
+            recording_count
+        FROM songs
+        LEFT JOIN (
+            SELECT
+                title,
+                count(*) AS recording_count
+            FROM
+                recordings
+            WHERE
+                group_id = ?
+            GROUP BY title
+        ) ON name = title
+        WHERE
+            songs.group_id = ?
+        ORDER BY name ASC;
+    """, [group_id, group_id])
     return cur.fetchall()
+
+def add_new_song(group_id: int, title: str):
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute(
+        """
+            SELECT name
+            FROM songs
+            WHERE lower(songs.name) = lower(?)
+            LIMIT 1;
+        """,
+        [title]
+    )
+
+    if cur.fetchone() is not None:
+        return -1
+
+    cur.execute("""
+        INSERT INTO songs (name, gdrive, group_id)
+        VALUES (?, '', ?);
+    """, [title, group_id])
+
+    db.commit()
+
+    return 0
 
 def update_track(id, description, title, date, recorded_by, location, tags, partial=None):
     db = get_db()
@@ -184,3 +229,31 @@ def get_next_asset_id():
     db.commit()
 
     return x[0]
+
+def get_playlist(id):
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("SELECT id, title, description, owner_id, tracks, view_mode, allowed_viewers FROM playlists WHERE id = ?", [id])
+    return cur.fetchone()
+
+def get_track(track_id):
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("SELECT id, filename, title, recorded_by, location, description, record_date, tags, group_id FROM recordings WHERE id = ?", [track_id])
+    return cur.fetchone()
+
+
+def update_playlist(playlist_id, updated_tracks):
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("""
+        UPDATE playlists
+        SET tracks = ?
+        WHERE id = ?;
+    """, [str(playlist_id), ','.join(updated_tracks)])
+    print(cur.fetchone())
+
+    db.commit()
