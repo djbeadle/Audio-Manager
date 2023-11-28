@@ -110,3 +110,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 db_operations.py
+audio_manager_dev.db
