@@ -212,10 +212,12 @@ max-width: 800px;
             <div class="">
                 <label for="song_name">Song Name</label>
                     <input
+                        title="{{ recording.title }}"
                         list="song_names"
                         class="song_name"
                         fallbackValue="{{ recording.filename|trim }}" 
                         value="{{ recording.title }}"
+                        autocomplete="off"
                     >
             </div>
 

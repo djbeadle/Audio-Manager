@@ -17,9 +17,9 @@ def get_song_counts(group_id, record_date=None):
     cur = get_db().cursor()
 
     if record_date is None:
-        return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? GROUP BY title;", [group_id]).fetchall()
+        return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? GROUP BY lower(title);", [group_id]).fetchall()
     else:
-        return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? AND record_date = ? GROUP BY title;", [group_id, record_date]).fetchall()
+        return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? AND record_date = ? GROUP BY lower(title);", [group_id, record_date]).fetchall()
 
 
 def record_upload(filename, event_time, size, etag, group_id):
@@ -72,7 +72,7 @@ def get_song_names(group_id: int):
                 recordings
             WHERE
                 group_id = ?
-            GROUP BY title
+            GROUP BY lower(title)
         ) ON name = title
         WHERE
             songs2.group_id = ?
@@ -88,7 +88,7 @@ def add_new_song(group_id: int, title: str):
         """
             SELECT name
             FROM songs2
-            WHERE lower(name) = lower(?)
+            WHERE lower(name) = lower(trim(?))
                 AND group_id = ?
             LIMIT 1;
         """,
@@ -205,7 +205,7 @@ def search_for_song(song, group_id):
         return cur.execute("""
             SELECT *
             FROM recordings
-            WHERE title = ?
+            WHERE trim(lower(title)) = trim(lower(?))
             AND group_id = ?
         """,
         [song, group_id])

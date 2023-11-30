@@ -49,7 +49,6 @@ def home(raw_group_id):
     return render_template(
         'landing.html',
         group=group_info,
-        song_counts=get_song_counts(g.group_id),
         things=list_all_things(g.group_id),
     )
 
@@ -104,9 +103,13 @@ def save_edit():
 def songs(raw_group_id):
     suggestions = get_song_names(g.group_id)
 
+    open_suggestions = request.args.get('open_suggestions', "") != ""
+
     return render_template(
         "songs.html",
         group={ 'id': g.group_id },
+        song_counts=get_song_counts(g.group_id),
+        open_suggestions=open_suggestions,
         songs=suggestions
     )
 
@@ -117,7 +120,7 @@ def create_song(raw_group_id):
     if add_new_song(g.group_id, new_title) == -1:
         return 'A song with this title already exists!', 302
 
-    return redirect(url_for('landing_bp.songs', raw_group_id=raw_group_id))
+    return redirect(url_for('landing_bp.songs', raw_group_id=raw_group_id, open_suggestions=True ))
 
 
 

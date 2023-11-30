@@ -18,13 +18,29 @@
             <div style="display: flex; flex-direction: column;">
                 <label for="title">New Song Title</label>
                 {# TODO CSRF protection #}
-                <input id="new-title" type="text" name="new-title" placeholder="Timber (feat. Ke$ha)">
+                <input
+                autofocus
+                    id="new-title"
+                    type="text"
+                    name="new-title"
+                    placeholder="{{ ['Timber (feat. Ke$ha)', 'Music for the Royal Fireworks', 'Pride of the 97', 'Marching Lehigh', 'You Can Call Me Al']|random }}">
             </div>
 
             <input type="submit" value="Save" style="margin-top: auto;">
         </div>
     </form>
 </div>
+
+<details {% if open_suggestions == true %}open{% endif %}>
+    <summary>Suggestions:</summary>
+    <ul>
+        {% for name, count in song_counts|sort(attribute='1')|reverse %}
+            {% if count >= 2 and name|lower not in songs|map(attribute="name")|map("lower") %}
+                <li>{{ count }}: <a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?song={{ name }}">{{ name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</details>
 
 <ul>
     {% for song in songs %}

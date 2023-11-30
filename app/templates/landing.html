@@ -20,15 +20,6 @@
 {% if show_search|default(True) %}
 <div>
     <details>
-        <summary>Search by Song Name</summary>
-        <ul>
-            {% for name, count in song_counts|sort(attribute='1')|reverse %}
-                <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?song={{ name }}">{{ count }} - {{ name }}</a></li>
-            {% endfor %}
-        </ul>
-    </details>
-
-    <details>
         <summary>Search by Tag</summary>
         <ul>
             <li><a href="{{ url_for('landing_bp.search', raw_group_id=group.id) }}?tag=midi">Midi</a></li>
