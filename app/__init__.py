@@ -83,6 +83,13 @@ def create_app(config_name):
         );
 
         INSERT INTO asset_counter (asset_id) VALUES (0);
+                        
+        CREATE TABLE IF NOT EXISTS songs2 (
+          "id" INTEGER PRIMARY KEY,
+          "name" TEXT NOT NULL,
+          "group_id"	INTEGER NOT NULL,
+	        FOREIGN KEY("group_id") REFERENCES "groups"("id")
+        )
 
         CREATE TABLE IF NOT EXISTS "songs" (
           "name" TEXT,

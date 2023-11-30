@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Song Title Suggestions</h1>
+
+<div style="margin-bottom: 8px;">
+    The following {{ songs|length }} titles will appear in the title autocomplete.
+</div>
+
+<div class="apply-to-all">
+    <form method="POST">
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content:space-between">
+            <div style="display: flex; flex-direction: column;">
+                <label for="title">New Song Title</label>
+                {# TODO CSRF protection #}
+                <input id="new-title" type="text" name="new-title" placeholder="Timber (feat. Ke$ha)">
+            </div>
+
+            <input type="submit" value="Save" style="margin-top: auto;">
+        </div>
+    </form>
+</div>
+
+<ul>
+    {% for song in songs %}
+    <li>{{ song['name'] }} (<a href="{{ url_for('landing_bp.search', raw_group_id=group.id ) }}?song={{ song['name'] }}">{{ song['recording_count'] }}</a>)</li>
+    {% endfor %}
+</ul>
+
+<div>
+</div>
+{% endblock %}

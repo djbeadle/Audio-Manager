@@ -1,6 +1,6 @@
 from flask import redirect, render_template, Response, request, g, url_for
 from app.landing import landing_bp
-from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track, list_things_on_date
+from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track, list_things_on_date, add_new_song
 
 import json, urllib
 from uuid import UUID
@@ -91,13 +91,34 @@ def edit(raw_group_id):
         'edit.html',
         ids=id_dicts,
         group={ 'id': g.group_id },
-        song_names=get_song_names()
+        song_names=get_song_names(g.group_id)
     )
 
 @landing_bp.route('/edit', methods=['POST'])
 def save_edit():
     list(map(lambda x: update_track(**x), request.json))
     return '', 200
+
+
+@landing_bp.route('/<raw_group_id>/songs')
+def songs(raw_group_id):
+    suggestions = get_song_names(raw_group_id)
+
+    return render_template(
+        "songs.html",
+        group={ 'id': g.group_id },
+        songs=suggestions
+    )
+
+@landing_bp.route('/<raw_group_id>/songs', methods=['POST'])
+def create_song(raw_group_id):
+    new_title = request.form['new-title'].strip()
+
+    if add_new_song(g.group_id, new_title) == -1:
+        return 'A song with this title already exists!', 302
+
+    return redirect(url_for('landing_bp.songs', raw_group_id=raw_group_id))
+
 
 
 @landing_bp.route('/<raw_group_id>/track/<track_id>')

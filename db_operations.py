@@ -56,11 +56,56 @@ def get_single_thing(filename):
     return cur.fetchone()
 
 
-def get_song_names():
+def get_song_names(group_id: int):
     cur = get_db().cursor()
 
-    cur.execute('SELECT name FROM songs;')
+    cur.execute("""
+        SELECT
+            name,
+            recording_count
+        FROM songs2
+        LEFT JOIN (
+            SELECT
+                title,
+                count(*) AS recording_count
+            FROM
+                recordings
+            WHERE
+                group_id = ?
+            GROUP BY title
+        ) ON name = title
+        WHERE
+            songs2.group_id = ?
+        ORDER BY name ASC;
+    """, [group_id, group_id])
     return cur.fetchall()
+
+def add_new_song(group_id: int, title: str):
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute(
+        """
+            SELECT name
+            FROM songs2
+            WHERE lower(name) = lower(?)
+                AND group_id = ?
+            LIMIT 1;
+        """,
+        [title, group_id]
+    )
+
+    if cur.fetchone() is not None:
+        return -1
+
+    cur.execute("""
+        INSERT INTO songs2 (name, group_id)
+        VALUES (?, ?);
+    """, [title, group_id])
+
+    db.commit()
+
+    return 0
 
 def update_track(id, description, title, date, recorded_by, location, tags, partial=None):
     db = get_db()
