@@ -102,7 +102,7 @@ def save_edit():
 
 @landing_bp.route('/<raw_group_id>/songs')
 def songs(raw_group_id):
-    suggestions = get_song_names(raw_group_id)
+    suggestions = get_song_names(g.group_id)
 
     return render_template(
         "songs.html",
