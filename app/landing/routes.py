@@ -4,7 +4,7 @@ from db_operations import get_group_info, get_single_thing, get_song_counts, lis
 
 import json, urllib
 from uuid import UUID
-from s3 import generate_presigned_post
+from s3 import generate_presigned_post, get_metadata
 
 @landing_bp.before_request
 def translate_name():
@@ -175,10 +175,7 @@ def sns():
         for r in json.loads(msg)['Records']:
             folder, file = r['s3']['object']['key'].split('/')
 
-            tags = None
-            record_date = None
-            if record_date := request.headers.get('x-amz-meta-guessed-folder-date', None):
-                tags = f'AutoUpload_{record_date}'
+            metadata = get_metadata(r['s3']['object']['key'])
             
             record_upload(
                 file,
@@ -187,8 +184,8 @@ def sns():
                 r['s3']['object']['size'],
                 r['s3']['object']['eTag'],
                 folder,
-                record_date=record_date
-                tags=tags
+                record_date=metadata.get('x-amz-guessed-folder-date', ''),
+                tags=f"AutoUpload-{metadata['x-amz-guessed-folder-date']}" if metadata.get('x-amz-guessed-folder-date') else ''
             )
 
     return 'OK\n'
