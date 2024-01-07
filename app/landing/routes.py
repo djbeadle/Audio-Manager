@@ -1,4 +1,4 @@
-from flask import redirect, render_template, Response, request, g, url_for
+from flask import redirect, render_template, Response, request, g, url_for, current_app
 from app.landing import landing_bp
 from db_operations import get_group_info, get_single_thing, get_song_counts, list_all_things, record_upload, search_for_song, search_for_things, get_next_asset_id, get_song_names, update_track, list_things_on_date, add_new_song
 
@@ -187,6 +187,16 @@ def sns():
     return 'OK\n'
 
 
+@landing_bp.route('/next_asset_id', methods=['GET'])
+def retrieve_next_asset_id():
+    secret = request.args.get('secret')
+    if not secret or secret != current_app.config['NEXT_ASSET_ID_SECRET']:
+        return Response(json.dumps({"error": "Now just hold on a minute, bucko."}), status=401, mimetype="application/json")
+    
+    return json.dumps({'next_asset_id': get_next_asset_id()})
+    
+
+
 @landing_bp.route('/<raw_group_id>/upload/s3/params', methods=['GET'])
 def get_presigned_s3_upload_url(raw_group_id):
     # https://github.com/transloadit/uppy/blob/main/packages/%40uppy/companion/src/server/controllers/s3.js
@@ -198,7 +208,7 @@ def get_presigned_s3_upload_url(raw_group_id):
         file_type = request.args.get('type')
     except ValueError as e:
         print(e)
-        return Response({"error": "Now just hold on a minute, bucko."}, status=400, mimetype="application/json")
+        return Response(json.dumps({"error": "Now just hold on a minute, bucko."}), status=401, mimetype="application/json")
 
     params = request.args
     # Due to issues with how S3 encodes plus signs I'm just going to replace them with spaces for now.
