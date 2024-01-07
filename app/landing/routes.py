@@ -175,13 +175,20 @@ def sns():
         for r in json.loads(msg)['Records']:
             folder, file = r['s3']['object']['key'].split('/')
 
+            tags = None
+            record_date = None
+            if record_date := request.headers.get('x-amz-meta-guessed-folder-date', None):
+                tags = f'AutoUpload_{record_date}'
+            
             record_upload(
                 file,
                 r['eventTime'],
                 # r['requestParameters']['sourceIPAddress'],
                 r['s3']['object']['size'],
                 r['s3']['object']['eTag'],
-                folder
+                folder,
+                record_date=record_date
+                tags=tags
             )
 
     return 'OK\n'

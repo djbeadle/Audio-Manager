@@ -22,7 +22,7 @@ def get_song_counts(group_id, record_date=None):
         return cur.execute("SELECT title, count(*) AS count FROM recordings WHERE group_id = ? AND record_date = ? GROUP BY lower(title);", [group_id, record_date]).fetchall()
 
 
-def record_upload(filename, event_time, size, etag, group_id):
+def record_upload(filename, event_time, size, etag, group_id, record_date:str=None, tags:str=None):
     db = get_db()
     cur = db.cursor()
   
@@ -34,11 +34,13 @@ def record_upload(filename, event_time, size, etag, group_id):
                     upload_date,
                     size,
                     etag,
-                    group_id
-                ) VALUES (?, ?, ?, ?, ?);
+                    group_id,
+                    record_date,
+                    tags
+                ) VALUES (?, ?, ?, ?, ?, ?);
                 
             """,
-            [filename, event_time, size, etag, group_id]
+            [filename, event_time, size, etag, group_id, record_date, tags]
         )
         db.commit()
 
