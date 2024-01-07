@@ -37,7 +37,7 @@ def record_upload(filename, event_time, size, etag, group_id, record_date:str=''
                     group_id,
                     record_date,
                     tags
-                ) VALUES (?, ?, ?, ?, ?, ?);
+                ) VALUES (?, ?, ?, ?, ?, ?, ?);
                 
             """,
             [filename, event_time, size, etag, group_id, record_date, tags]

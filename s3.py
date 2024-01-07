@@ -41,6 +41,6 @@ def generate_presigned_post(filename, type, fields):
 
 def get_metadata(filename):
     return S3_CLIENT.head_object(
-        _current_config.AWS_BUCKET_NAME,
-        filename
+        Bucket=_current_config.AWS_BUCKET_NAME,
+        Key=filename
     )

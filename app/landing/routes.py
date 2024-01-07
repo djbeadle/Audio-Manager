@@ -175,7 +175,10 @@ def sns():
         for r in json.loads(msg)['Records']:
             folder, file = r['s3']['object']['key'].split('/')
 
+            # Grab the metadata that wasn't included in the SNS 
             metadata = get_metadata(r['s3']['object']['key'])
+            guessed_date = metadata['ResponseMetadata']['HTTPHeaders'].get('x-amz-meta-guessed-folder-date', None)
+            print(f'guessed date: {guessed_date}')
             
             record_upload(
                 file,
@@ -184,8 +187,8 @@ def sns():
                 r['s3']['object']['size'],
                 r['s3']['object']['eTag'],
                 folder,
-                record_date=metadata.get('x-amz-guessed-folder-date', ''),
-                tags=f"AutoUpload-{metadata['x-amz-guessed-folder-date']}" if metadata.get('x-amz-guessed-folder-date') else ''
+                record_date=guessed_date if guessed_date else '', 
+                tags=f"AutoUpload-{guessed_date}" if guessed_date else ''
             )
 
     return 'OK\n'
